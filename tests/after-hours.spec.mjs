@@ -218,3 +218,28 @@ test('extra-narrow mobile header has no overlapping slogan at 320px',async({page
  await page.locator('#quietSwitch').click();
  await expect(page.locator('#quietSwitch')).toHaveAttribute('aria-pressed','true');
 });
+
+
+test('selected vinyl and pickup record share the matching album cover',async({page})=>{
+ test.setTimeout(100000);
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:14000});
+ const ready=await page.evaluate(()=>!!window.afterHours3D);
+ if(!ready)test.skip(true,'WebGL unavailable on CI runner');
+ await page.locator('.sleeve').nth(2).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7500});
+ await expect.poll(async()=>page.evaluate(()=>window.afterHours3D.getLabelStatus().selectedIndex)).toBe(2);
+ const label=await page.evaluate(()=>window.afterHours3D.getLabelStatus());
+ expect(label.travelMatchesMain).toBe(true);
+ // When the cover CDN supports WebGL/CORS, both labels must show THAT image.
+ if(label.artworkLoaded)expect(label.mainMatchesArtwork).toBe(true);
+ await page.keyboard.press('Escape');
+ await expect(page.locator('#game')).not.toHaveClass(/playing-view/);
+ await page.locator('.sleeve').nth(7).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7500});
+ await expect.poll(async()=>page.evaluate(()=>window.afterHours3D.getLabelStatus().selectedIndex)).toBe(7);
+ const next=await page.evaluate(()=>window.afterHours3D.getLabelStatus());
+ expect(next.travelMatchesMain).toBe(true);
+ if(next.artworkLoaded)expect(next.mainMatchesArtwork).toBe(true);
+});
