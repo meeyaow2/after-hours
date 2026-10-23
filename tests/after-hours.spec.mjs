@@ -13,6 +13,14 @@ for (const width of widths) {
       await expect(page.locator('#song')).toBeAttached();
       await expect(page.locator('#masterVolume')).toBeAttached();
       await expect(page.locator('#sourceDrawer')).toBeAttached();
+      await expect(page.locator('#sanctuaryNote')).toBeAttached();
+      await expect(page.locator('#quietSwitch')).toBeAttached();
+      await page.locator('#quietSwitch').evaluate(el=>el.click());
+      await expect(page.locator('#game')).toHaveClass(/quiet-active/);
+      await expect(page.locator('#quietSwitch')).toHaveAttribute('aria-pressed','true');
+      await page.locator('#quietSwitch').evaluate(el=>el.click());
+      await expect(page.locator('#game')).not.toHaveClass(/quiet-active/);
+
 
       // A CDN or WebGL error must not remove the fallback room.
       await page.waitForTimeout(1800);
