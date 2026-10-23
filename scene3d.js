@@ -72,11 +72,11 @@ for(const sideX of [-9.3,9.3]){
 }
 const hangingFixture=new THREE.Group();scene.add(hangingFixture);
 const wire=new THREE.Mesh(new THREE.CylinderGeometry(.011,.011,.95,10),slatWood);
-wire.position.set(0,5.57,1.25);hangingFixture.add(wire);
+wire.position.set(5.3,4.55,-2.05);hangingFixture.add(wire);
 const lantern=new THREE.Mesh(new THREE.CylinderGeometry(.38,.27,.55,28,1),m('#c09b6d',.84));
-lantern.position.set(0,4.86,1.25);hangingFixture.add(lantern);
+lantern.position.set(5.3,3.91,-2.05);hangingFixture.add(lantern);
 const lanternPoint=new THREE.PointLight(0xffb879,10,9,2);
-lanternPoint.position.set(0,4.62,1.27);scene.add(lanternPoint);
+lanternPoint.position.set(5.3,3.73,-1.95);scene.add(lanternPoint);
 const atmosphereLight=new THREE.PointLight(0xffc48a,0,7,2);
 atmosphereLight.position.set(0,1.9,.4);scene.add(atmosphereLight);
 const livingMat=m('#47604a',.93);
@@ -383,7 +383,15 @@ function pointHand(e){
 }
 addEventListener('pointermove',pointHand,{passive:true});
 
-function resize(){camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<700?63:48;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<800?1.35:1.75));renderer.setSize(innerWidth,innerHeight)}
+function resize(){
+ camera.aspect=innerWidth/innerHeight;
+ camera.fov=innerWidth<700?63:48;
+ // Keep all twelve sleeves within the view on tablets and narrow desktop windows.
+ wallCamera.z=innerWidth>=700&&innerWidth<1100?11.25:7.8;
+ camera.updateProjectionMatrix();
+ renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<800?1.35:1.75));
+ renderer.setSize(innerWidth,innerHeight);
+}
 addEventListener('resize',resize);resize();
 function testHit(e){
  const bounds=cv.getBoundingClientRect();pointer.set((e.clientX-bounds.left)/bounds.width*2-1,-(e.clientY-bounds.top)/bounds.height*2+1);
