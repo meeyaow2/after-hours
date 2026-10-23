@@ -151,6 +151,17 @@ const groove=new THREE.Group();groove.rotation.x=-Math.PI/2;groove.position.y=.0
 for(let r=.26;r<.68;r+=.019){const mesh=new THREE.Mesh(new THREE.TorusGeometry(r,.0015,3,100),new THREE.MeshStandardMaterial({color:r% .04>.02?'#262628':'#303032',metalness:.52,roughness:.35}));groove.add(mesh)}
 recordGroup.add(groove);
 const label=new THREE.Mesh(new THREE.CylinderGeometry(.205,.205,.018,60),labelMat);label.position.y=.019;recordGroup.add(label);
+// Reuse the artwork already loaded for the 3D sleeve. If a host blocks
+// cross-origin textures, the readable cream label stays as the fallback.
+const labelArtworkCache=new Map();
+let selectedLabelIndex=-1;
+function setDiscLabelMaterial(texture){
+ const mainOld=label.material,travelOld=travelInner.material;
+ label.material=new THREE.MeshStandardMaterial({map:texture,color:0xffffff,roughness:.68,metalness:.02});
+ travelInner.material=new THREE.MeshStandardMaterial({map:texture,color:0xffffff,roughness:.68,metalness:.02});
+ if(mainOld!==labelMat)mainOld.dispose();
+ if(travelOld!==labelMat)travelOld.dispose();
+}
 function updateRecordLabel(index){
  const item=albums[index];if(!item)return;
  const artist=item.getAttribute('aria-label')?.split(' by ').pop()||'AFTER HOURS';
@@ -164,8 +175,8 @@ function updateRecordLabel(index){
  ctx.font='23px Georgia';ctx.fillText(artist.toUpperCase().slice(0,22),256,334);
  ctx.font='19px Georgia';ctx.fillText('33⅓ RPM',256,395);
  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
- const old=label.material;label.material=new THREE.MeshStandardMaterial({map:tex,roughness:.65,metalness:.03});
- if(old!==labelMat)old.dispose();
+ selectedLabelIndex=index;
+ setDiscLabelMaterial(labelArtworkCache.get(index)||tex);
 }
 
 const spindle=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.055,20),steel);spindle.position.y=.055;recordGroup.add(spindle);
@@ -212,8 +223,7 @@ const travelVinyl=new THREE.Mesh(
  new THREE.CylinderGeometry(.60,.60,.014,100),
  new THREE.MeshPhysicalMaterial({color:0x101112,metalness:.23,roughness:.26,clearcoat:.91,clearcoatRoughness:.16}));
 travelRecord.add(travelVinyl);
-const travelInner=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.018,64),
- new THREE.MeshStandardMaterial({color:0xb68c68,roughness:.57}));
+const travelInner=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.018,64),labelMat);
 travelInner.position.y=.014;travelRecord.add(travelInner);
 const travelGrooves=new THREE.Mesh(new THREE.TorusGeometry(.48,.003,4,100),m('#3a3a40',.42,.48));
 travelGrooves.rotation.x=-Math.PI/2;travelGrooves.position.y=.012;travelRecord.add(travelGrooves);
@@ -255,6 +265,8 @@ for(let i=0;i<albums.length;i++){
      texture.colorSpace=THREE.SRGBColorSpace;
      texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
      texture.minFilter=THREE.LinearMipmapLinearFilter;
+     labelArtworkCache.set(i,texture);
+     if(selectedLabelIndex===i)setDiscLabelMaterial(texture);
      const previous=box.material[4];
      box.material[4]=new THREE.MeshStandardMaterial({map:texture,roughness:.8});
      if(previous!==front)previous.dispose();
@@ -267,6 +279,7 @@ for(let i=0;i<albums.length;i++){
 function beginPickup(index){
  const item=vinylHits[index];
  if(!item||pickupState.active||game.classList.contains('playing-view'))return;
+ updateRecordLabel(index);
  pickupState.active=true;pickupState.album=item;
  pickupState.from=item.position.clone();pickupState.elapsed=0;
  pickupState.duration=reducedMotion?.21:1.16;
