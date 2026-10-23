@@ -183,3 +183,21 @@ test('startup stays covered until room is rendered and then reveals',async({page
   expect(camera.z).toBeCloseTo(7.8,1);
  }
 });
+
+
+test('mobile Quiet Mode stays separate from the brand and helper text',async({page})=>{
+ test.setTimeout(30000);
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:12000});
+ await expect(page.locator('.rightnote')).toBeHidden();
+ const header=await page.evaluate(()=>{
+  const a=document.querySelector('.brand').getBoundingClientRect();
+  const b=document.querySelector('#quietSwitch').getBoundingClientRect();
+  return {brandRight:a.right,buttonLeft:b.left,buttonRight:b.right,screen:innerWidth};
+ });
+ expect(header.brandRight).toBeLessThan(header.buttonLeft);
+ expect(header.buttonRight).toBeLessThanOrEqual(header.screen);
+ await page.locator('#quietSwitch').click();
+ await expect(page.locator('#quietSwitch')).toHaveAttribute('aria-pressed','true');
+});
