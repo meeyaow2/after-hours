@@ -12,7 +12,7 @@ game.insertBefore(cv,room);
 const scene=new THREE.Scene();scene.background=new THREE.Color('#17100c');scene.fog=new THREE.FogExp2('#20150e',.025);
 const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.08,100);
 camera.position.set(0,2.55,9.1);
-const wallCamera=new THREE.Vector3(0,2.55,9.1),wallLook=new THREE.Vector3(0,2.12,-1.3);
+const wallCamera=new THREE.Vector3(0,2.65,7.8),wallLook=new THREE.Vector3(0,2.4,-2.0);
 const deckCamera=new THREE.Vector3(.28,4.05,5.75),deckLook=new THREE.Vector3(0,.88,2.2);
 const look=new THREE.Vector3().copy(wallLook);
 camera.lookAt(look);
@@ -78,30 +78,35 @@ for(let i=0;i<albums.length;i++){
  artCtx.font='22px Georgia';artCtx.fillText('AFTER HOURS · THE COLLECTION',256,55);
  const placeholder=new THREE.CanvasTexture(artCanvas);placeholder.colorSpace=THREE.SRGBColorSpace;
  const front=new THREE.MeshStandardMaterial({map:placeholder,roughness:.83});
- const geo=new THREE.BoxGeometry(1.22,1.22,.06);
+ const geo=new THREE.BoxGeometry(1.64,1.64,.075);
  const box=new THREE.Mesh(geo,[m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),front,m('#1b1511')]);
  box.position.set(x,y,-2.36);box.rotation.y=-.05;box.castShadow=true;box.userData.record=i;scene.add(box);vinylHits.push(box);
  if(raw?.src){
    texLoader.load(raw.src,texture=>{texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());texture.minFilter=THREE.LinearMipmapLinearFilter;box.material[4]=new THREE.MeshStandardMaterial({map:texture,roughness:.78});},undefined,()=>{});
  }
 }
-const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(-10,-10);
+const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(0,0);
 let hover=null,mode='wall',targetMode='wall',animatingRecord=false,picked=-1,handMeshes=null;
+let pointerActive=false,handGrab=0;
 const clock=new THREE.Clock();
 function makeHand(){
  const group=new THREE.Group();
  const skin=m('#b48766',.9),shade=m('#8d634c',.96),fabric=m('#272b2a',.96),cuff=m('#e7dbc9',.85);
  const palm=new THREE.Mesh(new THREE.SphereGeometry(.18,22,14),skin);palm.scale.set(.8,1.35,.38);group.add(palm);
+ const fingers=[];
  for(let n=0;n<4;n++){
+  const joint=new THREE.Group();joint.position.set(-.13+n*.082,.20+(n===1?.06:0),.025);group.add(joint);
   const finger=new THREE.Mesh(new THREE.CapsuleGeometry(.038,.18-n*.012,5,10),skin);
-  finger.position.set(-.13+n*.082,.21+(n===1?.06:0),.025);finger.rotation.z=(n-1.5)*-.12;group.add(finger);
+  finger.position.y=.09;finger.rotation.z=(n-1.5)*-.12;joint.add(finger);
+  fingers.push(joint);
  }
  const thumb=new THREE.Mesh(new THREE.CapsuleGeometry(.055,.13,5,10),shade);thumb.position.set(-.2,.01,.055);thumb.rotation.z=-.76;group.add(thumb);
  const shirt=new THREE.Mesh(new THREE.CylinderGeometry(.125,.13,.13,20),cuff);shirt.position.y=-.29;group.add(shirt);
  const sleeve=new THREE.Mesh(new THREE.CylinderGeometry(.13,.175,.5,20),fabric);sleeve.position.y=-.6;group.add(sleeve);
  group.rotation.z=-.38;group.rotation.x=-.4;
- group.scale.setScalar(.82);
- camera.add(group);scene.add(camera);group.position.set(.8,-.74,-1.55);return group
+ group.scale.setScalar(.98);
+ group.userData.fingers=fingers;
+ camera.add(group);scene.add(camera);group.position.set(.2,-.24,-1.9);return group
 }
 handMeshes=makeHand();
 function resize(){camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<700?63:48;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
@@ -111,9 +116,15 @@ function testHit(e){
  ray.setFromCamera(pointer,camera);
  return ray.intersectObjects(mode==='wall'?vinylHits:buttons,false)[0]?.object||null
 }
-function move(e){if(game.classList.contains('playing-view')!== (mode==='deck'))return;hover=testHit(e);cv.style.cursor=hover?'pointer':'default';if(mode==='wall'&&hover)document.getElementById('hint').textContent='Click to take this record from the wall';}
+function move(e){
+ pointerActive=true;
+ hover=testHit(e);
+ cv.style.cursor=hover?'pointer':'default';
+ if(mode==='wall'&&hover)document.getElementById('hint').textContent='Reach for the record · Click to take it';
+}
 cv.addEventListener('pointermove',move);
 cv.addEventListener('click',e=>{
+ handGrab=1;
  const hit=testHit(e);
  if(!hit)return;
  if(mode==='wall'){
@@ -147,11 +158,22 @@ function animate(){
  if(document.getElementById('vinyl').classList.contains('spinning'))recordGroup.rotation.y-=dt*Math.PI*1.1;
  const needleDown=document.getElementById('tonearm').classList.contains('down');
  tonePivot.rotation.y=THREE.MathUtils.damp(tonePivot.rotation.y,needleDown?-.45:.16,3.6,dt);
- const mouseX=THREE.MathUtils.clamp(pointer.x,-1,1);
- const mouseY=THREE.MathUtils.clamp(pointer.y,-1,1);
- const handGoal=new THREE.Vector3(.82+mouseX*.31,-.71+mouseY*.18,-1.55);
- handMeshes.position.lerp(handGoal,1-Math.exp(-dt*7));
- handMeshes.visible=innerWidth>700 && mode==='wall';
+ // Screen-space fingertip tracking: convert the actual pointer into a 3D point
+ // on a plane in front of the first-person camera (instead of barely drifting).
+ const handZ=-1.9;
+ const viewHeight=2*Math.abs(handZ)*Math.tan(THREE.MathUtils.degToRad(camera.fov)*.5);
+ const viewWidth=viewHeight*camera.aspect;
+ const handGoal=new THREE.Vector3(pointer.x*viewWidth*.5+.09,pointer.y*viewHeight*.5-.30,handZ);
+ handMeshes.position.lerp(handGoal,1-Math.exp(-dt*15));
+ const reachTarget=hover?.userData.record!==undefined?1:0;
+ handMeshes.rotation.x=THREE.MathUtils.damp(handMeshes.rotation.x,reachTarget?-.16:0,9,dt);
+ handMeshes.rotation.z=THREE.MathUtils.damp(handMeshes.rotation.z,reachTarget?-.10:0,9,dt);
+ handGrab=Math.max(0,handGrab-dt*2.8);
+ handMeshes.userData.fingers.forEach((joint,i)=>{
+   const curl=handGrab*.72+(reachTarget? (i===1?-.12:.18):0);
+   joint.rotation.x=THREE.MathUtils.damp(joint.rotation.x,curl,12,dt);
+ });
+ handMeshes.visible=mode==='wall' && innerWidth>700 && pointerActive;
  renderer.render(scene,camera);
 }
 document.documentElement.classList.add('three-ready');
