@@ -101,6 +101,27 @@ for(const [x,z,type] of [[.83,2.92,'start'],[1.20,2.92,'stop']]){
  const b=cylinder(.105,.055,steel,x,1.052,z);b.userData.action=type;buttons.push(b);
  const pin=cylinder(.055,.059,black,x,1.092,z);pin.userData.action=type;buttons.push(pin)
 }
+
+/* Warm undershelf glow and subtle high-fidelity hardware accents */
+const shelfGlowMaterial=new THREE.MeshBasicMaterial({color:0xb88251,transparent:true,opacity:.30,depthWrite:false});
+for(const y of [1.10,2.64,4.17]){
+ const strip=new THREE.Mesh(new THREE.BoxGeometry(8.55,.018,.028),shelfGlowMaterial);
+ strip.position.set(0,y,-2.50);scene.add(strip);
+}
+const brass=m('#a68b68',.23,.75);
+const platterRing=new THREE.Mesh(new THREE.TorusGeometry(.769,.012,8,112),brass);
+platterRing.rotation.x=-Math.PI/2;platterRing.position.set(-.53,1.134,2.4);scene.add(platterRing);
+const tinyScrews=[];
+for(const [x,z] of [[-1.19,1.54],[1.19,1.54],[-1.19,3.25],[1.19,3.25]]){
+ const screw=cylinder(.022,.008,steel,x,1.005,z);tinyScrews.push(screw);
+}
+const powerLight=new THREE.Mesh(new THREE.SphereGeometry(.022,12,8),
+ new THREE.MeshStandardMaterial({color:0xf4c489,emissive:'#e3a354',emissiveIntensity:1.8}));
+powerLight.position.set(1.13,1.015,2.67);scene.add(powerLight);
+const vinylGlint=new THREE.Mesh(new THREE.RingGeometry(.44,.59,100,1,0,Math.PI*.43),
+ new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.055,side:THREE.DoubleSide,depthWrite:false}));
+vinylGlint.rotation.x=-Math.PI/2;vinylGlint.position.set(0,.013,0);recordGroup.add(vinylGlint);
+
 const vinylHits=[];
 const pickupState={active:false,album:null,from:null,elapsed:0,duration:1.2};
 let selectedSleeve=null;
@@ -179,6 +200,24 @@ function animatePickup(dt){
 }
 }
 
+
+/* Hover title plaque: this is an accessible enhancement, not a second menu. */
+const albumHover=document.createElement('div');
+albumHover.id='albumHover';
+albumHover.setAttribute('aria-hidden','true');
+albumHover.style.cssText='position:absolute;left:50%;top:14%;transform:translateX(-50%) translateY(-5px);pointer-events:none;z-index:28;background:#1d130feb;color:#f0dec5;border:1px solid #ba906254;padding:10px 16px;border-radius:6px;font:12px Georgia,serif;letter-spacing:.015em;opacity:0;transition:opacity .18s,transform .18s;max-width:min(70vw,380px);text-align:center;box-shadow:0 8px 24px #0006';
+game.appendChild(albumHover);
+let shownHover=-1;
+function updateAlbumHover(index){
+ if(index===shownHover)return;
+ shownHover=index;
+ if(index<0){albumHover.style.opacity='0';albumHover.style.transform='translateX(-50%) translateY(-5px)';return;}
+ const label=albums[index].getAttribute('aria-label')?.replace(/^Pick up /,'')||'Explore record';
+ albumHover.textContent=label;
+ albumHover.style.opacity='1';
+ albumHover.style.transform='translateX(-50%) translateY(0)';
+}
+
 const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(0,0);
 let hover=null,mode='wall',targetMode='wall',animatingRecord=false,picked=-1,handMeshes=null;
 let pointerActive=false,handGrab=0;
@@ -227,10 +266,12 @@ function testHit(e){
 function move(e){
  pointerActive=true;
  hover=testHit(e);
+ updateAlbumHover(mode==='wall'?(hover?.userData.record??-1):-1);
  cv.style.cursor=hover?'pointer':'default';
  if(mode==='wall'&&hover)document.getElementById('hint').textContent='Reach for the record · Click to take it';
 }
 cv.addEventListener('pointermove',move);
+cv.addEventListener('pointerleave',()=>{hover=null;updateAlbumHover(-1)});
 cv.addEventListener('click',e=>{
  handGrab=1;
  const hit=testHit(e);
@@ -253,7 +294,7 @@ let keyboardIndex=-1;
 function keyboardPick(index){
  if(index<0||index>=vinylHits.length||game.classList.contains('playing-view'))return;
  const item=vinylHits[index];if(!item)return;
- hover=item;keyboardIndex=index;
+ hover=item;keyboardIndex=index;updateAlbumHover(index);
  document.getElementById('hint').textContent='Selected: '+albums[index].getAttribute('aria-label').replace('Pick up ','')+' · Press Enter to take the record';
 }
 addEventListener('keydown',e=>{
@@ -276,7 +317,7 @@ cv.addEventListener('webglcontextlost',event=>{
 });
 const observer=new MutationObserver(()=>{
  targetMode=game.classList.contains('playing-view')?'deck':'wall';
- if(targetMode==='wall'){picked=-1;keyboardIndex=-1;resetSleeves();}
+ if(targetMode==='wall'){picked=-1;keyboardIndex=-1;resetSleeves();}else updateAlbumHover(-1);
 });observer.observe(game,{attributes:true,attributeFilter:['class']});
 const dragRoot=cv;
 let grabStart=null;
@@ -294,6 +335,7 @@ function animate(){
  look.lerp(gaze,1-Math.exp(-dt*2.5));
  camera.lookAt(look);
  mode=targetMode;
+ if(mode!=='wall')updateAlbumHover(-1);
  // Animate setting the selected record down onto the platter when the camera arrives.
  recordPlacement=THREE.MathUtils.damp(recordPlacement,targetMode==='deck'?1:0,reducedMotion?18:2.5,dt);
  recordGroup.visible=recordPlacement>.03;
