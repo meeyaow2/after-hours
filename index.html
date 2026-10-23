@@ -448,7 +448,7 @@ function syncLocalAudioUI(index,hasFile){
   currentIframe=null;
   announcePlayback('Audio loaded for '+tracks[index].song+'. Play this record directly using the turntable. Spotify is hidden for this record.');
  }else{
-  announcePlayback('Listen to '+tracks[index].song+' through Spotify, or add your own permitted audio file to this record.');
+  announcePlayback('Record ready. Click the disc or press ▶ to open Spotify listening options for '+tracks[index].song+'. To play directly from the turntable, import audio you have permission to use.');
  }
 }
 function updateVinylState(on){
@@ -539,7 +539,7 @@ function place(index,button){
    byId('artist').textContent=data.artist;
    byId('label').style.background=data.color;
    byId('label').style.color=data.ink;
-   setHint(sourceMode==='local'?'Click the record or press ▶ to hear your saved audio':'Listen on Spotify, or add a local recording you have permission to use.');
+   setHint(sourceMode==='local'?'Click the record or press ▶ to play '+data.song:'Record ready. Click the disc to open listening options, or add your own audio.');
  };
  if(document.documentElement.classList.contains('three-ready')){
    selectionTimer=setTimeout(complete,matchMedia('(prefers-reduced-motion: reduce)').matches?180:1600);
