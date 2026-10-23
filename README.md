@@ -1,39 +1,35 @@
-# After Hours — Virtual Jazz Listening Bar
+# After Hours — First-Person Vinyl Listening Room
 
-*A place to stay for a while.*
+A small, atmospheric browser experience. You are standing in front of a wall of jazz records, with a turntable on the wooden table in front of you. Reach for a sleeve, place the record on the platter and lower the needle.
 
-After Hours reimagines the original Bops Music Playground as a cinematic, first-person-inspired virtual listening lounge. Wander between the record wall and turntable, browse fictional albums, and listen to original browser-synthesized jazz-inspired sketches.
+## Play
 
-## Live website
+https://meeyaow2.github.io/ops-music-playground/
 
-**https://meeyaow2.github.io/ops-music-playground/**
+## How to interact
 
-The original GitHub repository and GitHub Pages URL are preserved.
+1. Move your cursor over one of the **12 records** on the wall and click to pick it up.
+2. The record animates toward the turntable, transitioning into a close-up player view.
+3. Use the turntable's **START**, **STOP** and **NEEDLE** buttons to control playback.
+4. Adjust volume on the player, use **NEXT RECORD**, or return to the wall.
+5. On keyboards, press **Space** to play/pause and **Escape** to return to the wall.
 
-## Experience
+## Design
 
-- **Record wall:** Browse eight original album concepts, read liner notes, and choose from three instrumental sketches on each record.
-- **Turntable:** Lower or lift the needle; the record and tonearm respond to playback.
-- **Listening controls:** Play/pause, previous/next track, seek, and volume.
-- **Your evening:** Choose a seat, order a fictional drink, switch atmospheric descriptions, and toggle rain ambience.
-- **Responsive:** Record collection and player layouts adapt for tablet and phone sizes.
+- First-person perspective instead of normal website tabs, drawers, cards or navigation.
+- Visible sleeve wall, walnut furniture, physical turntable and hand-like mouse pointer.
+- Responsive scene, including a 4-column shelf layout on smaller screens.
+- Original Web Audio jazz-inspired synthesized instrument sketches, with no commercially licensed music.
+- No login, API key, dependency installation or build step.
 
-## Music and licensing
+## Limitations
 
-This prototype generates its music with the **Web Audio API**; it does not stream commercially released jazz recordings or download copyrighted tracks. All artists and album titles in the collection are fictional, and each track is a generative instrumental sketch rather than a professionally recorded song. Playback starts after user interaction due to browser autoplay restrictions.
+This is a self-contained **2.5D CSS-perspective** MVP, not yet a fully modeled first-person 3D world. Hands, record pickup and the camera transition are stylized rather than photorealistic, and the generated music is intentionally an early prototype. Browser audio needs a user gesture before it can play.
 
-## Run locally
+## Deploy
 
-Open `index.html` in a modern browser with JavaScript enabled. No dependencies, build command, or API credentials are required.
+GitHub Pages serves the repository's root `index.html` from the `main` branch. Subsequent commits redeploy automatically.
 
-## GitHub Pages
+## Project history
 
-The project is a static site. Go to **Settings → Pages → Deploy from a branch → main → /(root)**.
-
-## Development notes
-
-This is an atmospheric, perspective-styled MVP — **not yet a freely navigable 3D environment**. A true 3D room, more detailed record interactions, higher-fidelity music, and licensed audio integration are potential later additions.
-
-## Previous project
-
-Originally called **Bops**, a retro-pop beat sequencer. This repository now hosts its successor concept, After Hours.
+This repository originally hosted **Bops**, a browser beat sequencer, then an atmospheric jazz-bar concept. It now hosts the first-person vinyl-listening experience.
