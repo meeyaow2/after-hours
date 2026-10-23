@@ -470,7 +470,7 @@ async function prepareLocal(index,{autoPlay=false}={}){
   byId('clearAudio').hidden=false;
   syncLocalAudioUI(index,true);
   if(autoPlay){
-   if(typeof jazzAudio!=='undefined'&&!jazzAudio.paused)jazzAudio.pause();
+   if(typeof pauseJazz==='function'&&!jazzAudio.paused)pauseJazz();
    try{
     await ownedAudio.play();
     if(chosen===index){localPlaying=true;updateVinylState(true);setHint('Now playing '+tracks[index].song+' from your local audio');}
@@ -528,7 +528,7 @@ function place(index,button){
  byId('sourceDrawer').open=false;
  byId('spotifyMount').replaceChildren();
  currentIframe=null;
- prepareLocal(index);
+ prepareLocal(index,{autoPlay:true});
  announcePlayback('Checking saved audio for '+data.song+'…');
  setHint('Taking '+data.song+' from the shelf…');
  const complete=()=>{
@@ -597,7 +597,7 @@ async function lower(){
  if(chosen<0){setHint('Pick an album from the wall first.');return;}
  if(sourceMode==='local'&&ownedAudio.getAttribute('src')){
   if(!ownedAudio.paused){ownedAudio.pause();setHint('Paused · Press ▶ to resume');return;}
-  try{if(typeof jazzAudio!=='undefined')jazzAudio.pause();await ownedAudio.play();localPlaying=true;sourceMode='local';updateVinylState(true);setHint('Now playing your imported audio · Press ■ to stop');}
+  try{if(typeof pauseJazz==='function'&&!jazzAudio.paused)pauseJazz();await ownedAudio.play();localPlaying=true;sourceMode='local';updateVinylState(true);setHint('Now playing your imported audio · Press ■ to stop');}
   catch(e){updateVinylState(false);setHint('Unable to play audio. Try importing a supported file again.');}
   return;
  }
@@ -618,7 +618,7 @@ byId('audioFile').addEventListener('change',async event=>{
  const index=chosen;stop();localFiles[index]=file;
  const saved=await saveStored(index,file);
  if(chosen===index)await prepareLocal(index,{autoPlay:true});
- setHint(saved?'This record uses your private audio instead of Spotify.':'This record uses your audio for this session instead of Spotify.');
+ if(chosen===index)setHint(saved?'Playing your private audio instead of Spotify.':'Your audio is ready for this session instead of Spotify.');
  event.target.value='';
 });
 byId('clearAudio').addEventListener('click',async()=>{
