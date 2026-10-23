@@ -102,23 +102,34 @@ let hover=null,mode='wall',targetMode='wall',animatingRecord=false,picked=-1,han
 let pointerActive=false,handGrab=0;
 const clock=new THREE.Clock();
 function makeHand(){
+ // The foreground hand is a real transparent photographic cutout, not primitive geometry.
+ // One consistent photo is posed using easing, pitch and scale for idle/reach/grab states.
  const group=new THREE.Group();
- const skin=m('#b48766',.9),shade=m('#8d634c',.96),fabric=m('#272b2a',.96),cuff=m('#e7dbc9',.85);
- const palm=new THREE.Mesh(new THREE.SphereGeometry(.18,22,14),skin);palm.scale.set(.8,1.35,.38);group.add(palm);
- const fingers=[];
- for(let n=0;n<4;n++){
-  const joint=new THREE.Group();joint.position.set(-.13+n*.082,.20+(n===1?.06:0),.025);group.add(joint);
-  const finger=new THREE.Mesh(new THREE.CapsuleGeometry(.038,.18-n*.012,5,10),skin);
-  finger.position.y=.09;finger.rotation.z=(n-1.5)*-.12;joint.add(finger);
-  fingers.push(joint);
- }
- const thumb=new THREE.Mesh(new THREE.CapsuleGeometry(.055,.13,5,10),shade);thumb.position.set(-.2,.01,.055);thumb.rotation.z=-.76;group.add(thumb);
- const shirt=new THREE.Mesh(new THREE.CylinderGeometry(.125,.13,.13,20),cuff);shirt.position.y=-.29;group.add(shirt);
- const sleeve=new THREE.Mesh(new THREE.CylinderGeometry(.13,.175,.5,20),fabric);sleeve.position.y=-.6;group.add(sleeve);
- group.rotation.z=-.38;group.rotation.x=-.4;
- group.scale.setScalar(.98);
- group.userData.fingers=fingers;
- camera.add(group);scene.add(camera);group.position.set(.2,-.24,-1.9);return group
+ const mat=new THREE.MeshBasicMaterial({
+   transparent:true,opacity:0,color:0xffffff,depthTest:false,depthWrite:false,
+   side:THREE.DoubleSide,toneMapped:false
+ });
+ const width=.96,height=.93;
+ const plane=new THREE.Mesh(new THREE.PlaneGeometry(width,height),mat);
+ // Image fingertip is near its top left: offset plane so fingertip tracks the cursor.
+ plane.position.set(.35,-.43,0);
+ plane.renderOrder=999;
+ group.add(plane);
+ group.userData.ready=false;
+ group.userData.material=mat;
+ group.userData.plane=plane;
+ group.userData.state='idle';
+ group.userData.setState=state=>{group.userData.state=state;};
+ const loader=new THREE.TextureLoader();
+ loader.load('./assets/hand/hand-real.webp',texture=>{
+   texture.colorSpace=THREE.SRGBColorSpace;
+   texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+   mat.map=texture;mat.needsUpdate=true;
+   group.userData.ready=true;
+ },undefined,()=>console.warn('Real hand texture could not be loaded'));
+ camera.add(group);
+ group.position.set(.8,-.7,-1.9);
+ return group;
 }
 handMeshes=makeHand();
 function resize(){camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<700?63:48;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
@@ -174,22 +185,34 @@ function animate(){
  if(document.getElementById('vinyl').classList.contains('spinning'))recordGroup.rotation.y-=dt*Math.PI*1.1;
  const needleDown=document.getElementById('tonearm').classList.contains('down');
  tonePivot.rotation.y=THREE.MathUtils.damp(tonePivot.rotation.y,needleDown?-.45:.16,3.6,dt);
- // Screen-space fingertip tracking: convert the actual pointer into a 3D point
- // on a plane in front of the first-person camera (instead of barely drifting).
+ // Render a first-person photographic hand with fingertip anchored to mouse position.
  const handZ=-1.9;
  const viewHeight=2*Math.abs(handZ)*Math.tan(THREE.MathUtils.degToRad(camera.fov)*.5);
  const viewWidth=viewHeight*camera.aspect;
- const handGoal=new THREE.Vector3(pointer.x*viewWidth*.5+.09,pointer.y*viewHeight*.5-.30,handZ);
- handMeshes.position.lerp(handGoal,1-Math.exp(-dt*15));
- const reachTarget=hover?.userData.record!==undefined?1:0;
- handMeshes.rotation.x=THREE.MathUtils.damp(handMeshes.rotation.x,reachTarget?-.16:0,9,dt);
- handMeshes.rotation.z=THREE.MathUtils.damp(handMeshes.rotation.z,reachTarget?-.10:0,9,dt);
- handGrab=Math.max(0,handGrab-dt*2.8);
- handMeshes.userData.fingers.forEach((joint,i)=>{
-   const curl=handGrab*.72+(reachTarget? (i===1?-.12:.18):0);
-   joint.rotation.x=THREE.MathUtils.damp(joint.rotation.x,curl,12,dt);
- });
- handMeshes.visible=mode==='wall' && innerWidth>700 && pointerActive;
+ const aimingX=pointerActive?pointer.x:.58,aimingY=pointerActive?pointer.y:-.65;
+ const reaching=mode==='wall'&&hover?.userData.record!==undefined;
+ handGrab=Math.max(0,handGrab-dt*3.2);
+ const grabbing=handGrab>.2;
+ const handGoal=new THREE.Vector3(
+   aimingX*viewWidth*.48,
+   aimingY*viewHeight*.48,
+   handZ+(grabbing?.12:reaching?.06:0)
+ );
+ handMeshes.position.lerp(handGoal,1-Math.exp(-dt*13));
+ handMeshes.rotation.z=THREE.MathUtils.damp(
+   handMeshes.rotation.z,
+   (reaching?-.10:.01)+aimingX*.08+(grabbing?-.12:0),10,dt);
+ handMeshes.rotation.x=THREE.MathUtils.damp(
+   handMeshes.rotation.x,
+   reaching?-.10:0,9,dt);
+ const targetScale=grabbing?.9:reaching?1.03:1;
+ const size=THREE.MathUtils.damp(handMeshes.scale.x,targetScale,9,dt);
+ handMeshes.scale.setScalar(size);
+ handMeshes.userData.setState(grabbing?'grab':reaching?'reach':'idle');
+ handMeshes.visible=mode==='wall'&&innerWidth>700&&handMeshes.userData.ready;
+ handMeshes.userData.material.opacity=THREE.MathUtils.damp(
+   handMeshes.userData.material.opacity,
+   handMeshes.visible?.98:0,12,dt);
  renderer.render(scene,camera);
 }
 document.documentElement.classList.add('three-ready');
