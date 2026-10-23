@@ -170,6 +170,27 @@ const vinylGlint=new THREE.Mesh(new THREE.RingGeometry(.44,.59,100,1,0,Math.PI*.
  new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.055,side:THREE.DoubleSide,depthWrite:false}));
 vinylGlint.rotation.x=-Math.PI/2;vinylGlint.position.set(0,.013,0);recordGroup.add(vinylGlint);
 
+
+/* Physically staged album-to-turntable interaction.
+   The sleeve is taken forward, a distinct disc slides out of it,
+   then the disc travels down onto the record spindle. */
+const travelRecord=new THREE.Group();scene.add(travelRecord);
+const travelVinyl=new THREE.Mesh(
+ new THREE.CylinderGeometry(.60,.60,.014,100),
+ new THREE.MeshPhysicalMaterial({color:0x101112,metalness:.23,roughness:.26,clearcoat:.91,clearcoatRoughness:.16}));
+travelRecord.add(travelVinyl);
+const travelInner=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.018,64),
+ new THREE.MeshStandardMaterial({color:0xb68c68,roughness:.57}));
+travelInner.position.y=.014;travelRecord.add(travelInner);
+const travelGrooves=new THREE.Mesh(new THREE.TorusGeometry(.48,.003,4,100),m('#3a3a40',.42,.48));
+travelGrooves.rotation.x=-Math.PI/2;travelGrooves.position.y=.012;travelRecord.add(travelGrooves);
+travelRecord.visible=false;
+const pickupStatus=document.createElement('div');
+pickupStatus.id='pickupStatus';
+pickupStatus.style.cssText='position:absolute;left:50%;bottom:8%;transform:translateX(-50%);z-index:33;pointer-events:none;font:11px Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#f4dbb5;background:#1b110ce2;padding:9px 16px;border:1px solid #b48a585b;border-radius:999px;opacity:0;transition:opacity .25s';
+game.appendChild(pickupStatus);
+function setPickupStage(message){pickupStatus.textContent=message;pickupStatus.style.opacity=message?'1':'0'}
+
 const vinylHits=[];
 const pickupState={active:false,album:null,from:null,elapsed:0,duration:1.2};
 let selectedSleeve=null;
@@ -212,17 +233,26 @@ for(let i=0;i<albums.length;i++){
 
 function beginPickup(index){
  const item=vinylHits[index];
- if(!item||pickupState.active)return;
+ if(!item||pickupState.active||game.classList.contains('playing-view'))return;
  pickupState.active=true;pickupState.album=item;
  pickupState.from=item.position.clone();pickupState.elapsed=0;
- pickupState.duration=reducedMotion?.18:1.2;selectedSleeve=item;
+ pickupState.duration=reducedMotion?.21:1.16;
+ pickupState.stage='lifting';
+ pickupState.index=index;
+ selectedSleeve=item;
  item.renderOrder=12;
+ travelRecord.visible=false;
+ setPickupStage('Lifting record sleeve');
 }
 function resetSleeves(){
- for(const item of vinylHits){item.position.copy(item.userData.home);item.rotation.set(0,-.05,0);item.scale.setScalar(1);item.renderOrder=0;}
- pickupState.active=false;selectedSleeve=null;
+ for(const item of vinylHits){
+  item.position.copy(item.userData.home);
+  item.rotation.set(0,-.05,0);item.scale.setScalar(1);item.renderOrder=0;
+ }
+ pickupState.active=false;pickupState.stage='none';
+ selectedSleeve=null;travelRecord.visible=false;
+ setPickupStage('');
 }
-
 function animateSleeveHover(dt){
  const speed=1-Math.exp(-dt*11);
  for(const item of vinylHits){
@@ -239,15 +269,31 @@ function animatePickup(dt){
  pickupState.elapsed+=dt;
  const t=Math.min(1,pickupState.elapsed/pickupState.duration);
  const ease=t*t*(3-2*t),item=pickupState.album;
- item.position.lerpVectors(pickupState.from,new THREE.Vector3(pickupState.from.x*.12,2.4,.6),ease);
- item.rotation.y=-.05+ease*.25;item.rotation.x=-ease*.13;
- item.scale.setScalar(1+ease*.2);
- if(t>=1){pickupState.active=false;
-  // The sleeve has been lifted; a selected record label is now on the platter.
+ const from=pickupState.from;
+ const focus=new THREE.Vector3(from.x*.17,2.47,.30);
+ item.position.lerpVectors(from,focus,ease);
+ item.rotation.y=-.05+ease*.27;item.rotation.x=-ease*.06;
+ item.scale.setScalar(1+ease*.16);
+ if(t>.6&&pickupState.stage==='lifting'){pickupState.stage='extracting';setPickupStage('Taking vinyl from sleeve')}
+ // The newly revealed record slides from its cardboard sleeve, then lifts free.
+ if(t>.58){
+  const u=Math.min(1,(t-.58)/.42);
+  travelRecord.visible=true;
+  travelRecord.position.set(
+    THREE.MathUtils.lerp(item.position.x,item.position.x+.68,u),
+    item.position.y-.22,
+    item.position.z+.12+u*.33
+  );
+  travelRecord.rotation.set(Math.PI/2*(1-u*.4),0,.17*u);
+  travelRecord.scale.setScalar(.68);
+ }
+ if(t>=1){
+  pickupState.active=false;pickupState.stage='held';
   item.position.copy(item.userData.home);item.rotation.set(0,-.05,0);item.scale.setScalar(1);
+  // Keep the sleeve in place; the separated vinyl is carried to the turntable.
+  setPickupStage('Placing the record');
+ }
 }
-}
-
 
 /* Hover title plaque: this is an accessible enhancement, not a second menu. */
 const albumHover=document.createElement('div');
@@ -425,9 +471,20 @@ function animate(){
  if(mode!=='wall')updateAlbumHover(-1);
  // Animate setting the selected record down onto the platter when the camera arrives.
  recordPlacement=THREE.MathUtils.damp(recordPlacement,targetMode==='deck'?1:0,reducedMotion?18:2.5,dt);
- recordGroup.visible=recordPlacement>.03;
+ recordGroup.visible=recordPlacement>.90;
  const landing=recordPlacement*recordPlacement*(3-2*recordPlacement);
- recordGroup.position.y=1.174+(1-landing)*.48;
+ if(pickupState.stage==='held'){
+  const from=new THREE.Vector3(0,2.25,.94),to=new THREE.Vector3(-.53,1.174,2.4);
+  const step=Math.min(1,recordPlacement/.9),ease=step*step*(3-2*step);
+  travelRecord.position.lerpVectors(from,to,ease);
+  travelRecord.rotation.x=Math.PI*.24*(1-ease);
+  travelRecord.rotation.z=0;
+  travelRecord.scale.setScalar(.68+ease*.31);
+  travelRecord.visible=step<1;
+  if(recordPlacement>.94){travelRecord.visible=false;setPickupStage('');pickupState.stage='placed';}
+ }
+ if(targetMode==='wall'&&pickupState.stage==='placed'){travelRecord.visible=false;}
+ recordGroup.position.y=1.174+(1-landing)*.12;
  recordGroup.scale.setScalar(.89+landing*.11);
  // Spin the record only while local playback/needle state is active.
  const playing=document.getElementById('vinyl').classList.contains('spinning');
