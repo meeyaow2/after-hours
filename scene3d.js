@@ -585,7 +585,7 @@ function revealWhenStable(){
   });
  });
 }
-window.afterHours3D={renderer,scene,camera,selectRecord(index){updateRecordLabel(index);beginPickup(index)},reset:resetSleeves};
+window.afterHours3D={renderer,scene,camera,selectRecord(index){updateRecordLabel(index);beginPickup(index)},reset:resetSleeves,getLabelStatus(){return {selectedIndex:selectedLabelIndex,artworkLoaded:labelArtworkCache.has(selectedLabelIndex),mainMatchesArtwork:labelArtworkCache.get(selectedLabelIndex)===label.material.map,travelMatchesMain:travelInner.material.map===label.material.map}}};
 renderer.render(scene,camera);
 animate();
 requestAnimationFrame(revealWhenStable);
