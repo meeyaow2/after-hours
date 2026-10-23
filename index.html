@@ -481,7 +481,10 @@ function place(index,button){
  moving=true;
  const generation=++selectionGeneration;
  const data=tracks[index];
- chosen=index;lift();stopOwned();
+ chosen=index;
+ // Keep the vinyl artwork in sync whether selection came from 3D, mobile, or the HTML fallback.
+ window.afterHours3D?.selectRecord(index);
+ lift();stopOwned();
  sourceMode='none';
  byId('sourceDrawer').open=false;
  byId('radioState').textContent='READY';
