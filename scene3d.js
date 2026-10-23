@@ -67,7 +67,17 @@ for(let i=0;i<albums.length;i++){
  const x=-3.3+(i%4)*2.2,y=i<4?3.32:1.80;
  const cover=albums[i];const raw=cover.querySelector('img');
  const color=cover.style.getPropertyValue('--art')||'#49392f';
- const front=new THREE.MeshStandardMaterial({color:color,roughness:.83});
+ const artCanvas=document.createElement('canvas');artCanvas.width=512;artCanvas.height=512;
+ const artCtx=artCanvas.getContext('2d');artCtx.fillStyle=color;artCtx.fillRect(0,0,512,512);
+ const glow=artCtx.createRadialGradient(320,100,0,320,100,480);glow.addColorStop(0,'#ffffff28');glow.addColorStop(1,'#00000055');artCtx.fillStyle=glow;artCtx.fillRect(0,0,512,512);
+ artCtx.fillStyle='#f4e4cf';artCtx.textAlign='center';
+ const title=cover.getAttribute('aria-label')?.replace(/^Pick up /,'').split(' by ')[0]||'THE RECORD';
+ const words=title.toUpperCase().split(' ');let rows=[],line='';
+ for(const word of words){if((line+' '+word).length>14&&line){rows.push(line);line=word}else line+=(line?' ':'')+word}if(line)rows.push(line);
+ artCtx.font='bold 40px Georgia';rows.slice(0,5).forEach((text,j)=>artCtx.fillText(text,256,220+j*54,470));
+ artCtx.font='22px Georgia';artCtx.fillText('AFTER HOURS · THE COLLECTION',256,55);
+ const placeholder=new THREE.CanvasTexture(artCanvas);placeholder.colorSpace=THREE.SRGBColorSpace;
+ const front=new THREE.MeshStandardMaterial({map:placeholder,roughness:.83});
  const geo=new THREE.BoxGeometry(1.22,1.22,.06);
  const box=new THREE.Mesh(geo,[m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),front,m('#1b1511')]);
  box.position.set(x,y,-2.36);box.rotation.y=-.05;box.castShadow=true;box.userData.record=i;scene.add(box);vinylHits.push(box);
