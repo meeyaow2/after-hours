@@ -81,9 +81,21 @@ for(let i=0;i<albums.length;i++){
  const geo=new THREE.BoxGeometry(1.18,1.18,.075);
  const box=new THREE.Mesh(geo,[m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),front,m('#1b1511')]);
  box.position.set(x,y,-2.36);box.rotation.y=-.05;box.castShadow=true;box.userData.record=i;scene.add(box);vinylHits.push(box);
- if(raw?.src){
-   texLoader.load(raw.src,texture=>{texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());texture.minFilter=THREE.LinearMipmapLinearFilter;box.material[4]=new THREE.MeshStandardMaterial({map:texture,roughness:.78});},undefined,()=>{});
+ // Update the real 3D sleeve whenever the verified cover is loaded by the page.
+ // Keep our canvas label as a fallback when an image host disallows WebGL textures.
+ function setCover(url){
+   if(!url)return;
+   texLoader.load(url,texture=>{
+     texture.colorSpace=THREE.SRGBColorSpace;
+     texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+     texture.minFilter=THREE.LinearMipmapLinearFilter;
+     const previous=box.material[4];
+     box.material[4]=new THREE.MeshStandardMaterial({map:texture,roughness:.8});
+     if(previous!==front)previous.dispose();
+   },undefined,()=>{});
  }
+ if(raw?.src)setCover(raw.src);
+ cover.addEventListener('coverready',e=>setCover(e.detail.url));
 }
 const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(0,0);
 let hover=null,mode='wall',targetMode='wall',animatingRecord=false,picked=-1,handMeshes=null;
