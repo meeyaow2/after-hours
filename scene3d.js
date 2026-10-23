@@ -101,37 +101,38 @@ const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(0,0);
 let hover=null,mode='wall',targetMode='wall',animatingRecord=false,picked=-1,handMeshes=null;
 let pointerActive=false,handGrab=0;
 const clock=new THREE.Clock();
-function makeHand(){
- // The foreground hand is a real transparent photographic cutout, not primitive geometry.
- // One consistent photo is posed using easing, pitch and scale for idle/reach/grab states.
- const group=new THREE.Group();
- const mat=new THREE.MeshBasicMaterial({
-   transparent:true,opacity:0,color:0xffffff,depthTest:false,depthWrite:false,
-   side:THREE.DoubleSide,toneMapped:false
- });
- const width=.96,height=.93;
- const plane=new THREE.Mesh(new THREE.PlaneGeometry(width*1.3,height*1.3),mat);
- // Image fingertip is near its top left: offset plane so fingertip tracks the cursor.
- plane.position.set(.35,-.43,0);
- plane.renderOrder=999;
- group.add(plane);
- group.userData.ready=false;
- group.userData.material=mat;
- group.userData.plane=plane;
- group.userData.state='idle';
- group.userData.setState=state=>{group.userData.state=state;};
- const loader=new THREE.TextureLoader();
- loader.load('./assets/hand/hand-real.webp?v=verified2',texture=>{
-   texture.colorSpace=THREE.SRGBColorSpace;
-   texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
-   mat.map=texture;mat.needsUpdate=true;
-   group.userData.ready=true;
- },undefined,()=>console.warn('Real hand texture could not be loaded'));
- camera.add(group);
- group.position.set(.65,-.64,-1.9);
- return group;
+/* A DOM-backed photographic hand sits above the WebGL canvas.
+   This deliberately avoids camera-plane occlusion, culling and material-opacity issues. */
+const handImage=document.createElement('img');
+handImage.id='firstPersonHand';
+handImage.src='./assets/hand/hand-real.webp?v=hand-dom-17';
+handImage.alt='';
+handImage.setAttribute('aria-hidden','true');
+handImage.draggable=false;
+handImage.style.cssText=[
+ 'position:absolute','left:0','top:0','width:clamp(165px,16vw,250px)',
+ 'height:auto','object-fit:contain','pointer-events:none','user-select:none',
+ 'z-index:40','transform-origin:24% 10%','will-change:transform,opacity',
+ 'opacity:0','transition:opacity .24s ease','filter:drop-shadow(8px 12px 12px #0007)'
+].join(';');
+game.appendChild(handImage);
+let handReady=false;
+let handX=innerWidth*.74,handY=innerHeight*.57;
+let handTargetX=handX,handTargetY=handY,handTilt=0;
+handImage.addEventListener('load',()=>{
+ handReady=handImage.naturalWidth>0 && handImage.naturalHeight>0;
+ if(!handReady)console.warn('After Hours: hand texture decoded with no pixels');
+});
+handImage.addEventListener('error',()=>console.warn('After Hours: hand image failed to load'));
+function pointHand(e){
+ const rect=game.getBoundingClientRect();
+ if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)return;
+ handTargetX=e.clientX-rect.left;
+ handTargetY=e.clientY-rect.top;
+ pointerActive=true;
 }
-handMeshes=makeHand();
+addEventListener('pointermove',pointHand,{passive:true});
+
 function resize(){camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<700?63:48;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
 addEventListener('resize',resize);resize();
 function testHit(e){
@@ -185,34 +186,20 @@ function animate(){
  if(document.getElementById('vinyl').classList.contains('spinning'))recordGroup.rotation.y-=dt*Math.PI*1.1;
  const needleDown=document.getElementById('tonearm').classList.contains('down');
  tonePivot.rotation.y=THREE.MathUtils.damp(tonePivot.rotation.y,needleDown?-.45:.16,3.6,dt);
- // Render a first-person photographic hand with fingertip anchored to mouse position.
- const handZ=-1.9;
- const viewHeight=2*Math.abs(handZ)*Math.tan(THREE.MathUtils.degToRad(camera.fov)*.5);
- const viewWidth=viewHeight*camera.aspect;
- const aimingX=pointerActive?pointer.x:.35,aimingY=pointerActive?pointer.y:-.42;
- const reaching=mode==='wall'&&hover?.userData.record!==undefined;
+ // Position a real cutout above WebGL, with its fingertip next to the pointer.
+ const ease=1-Math.exp(-dt*14);
+ handX=THREE.MathUtils.lerp(handX,handTargetX,ease);
+ handY=THREE.MathUtils.lerp(handY,handTargetY,ease);
  handGrab=Math.max(0,handGrab-dt*3.2);
- const grabbing=handGrab>.2;
- const handGoal=new THREE.Vector3(
-   aimingX*viewWidth*.48,
-   aimingY*viewHeight*.48,
-   handZ+(grabbing?.12:reaching?.06:0)
- );
- handMeshes.position.lerp(handGoal,1-Math.exp(-dt*13));
- handMeshes.rotation.z=THREE.MathUtils.damp(
-   handMeshes.rotation.z,
-   (reaching?-.10:.01)+aimingX*.08+(grabbing?-.12:0),10,dt);
- handMeshes.rotation.x=THREE.MathUtils.damp(
-   handMeshes.rotation.x,
-   reaching?-.10:0,9,dt);
- const targetScale=grabbing?.9:reaching?1.03:1;
- const size=THREE.MathUtils.damp(handMeshes.scale.x,targetScale,9,dt);
- handMeshes.scale.setScalar(size);
- handMeshes.userData.setState(grabbing?'grab':reaching?'reach':'idle');
- handMeshes.visible=mode==='wall'&&innerWidth>700&&handMeshes.userData.ready;
- handMeshes.userData.material.opacity=THREE.MathUtils.damp(
-   handMeshes.userData.material.opacity,
-   handMeshes.visible?.98:0,12,dt);
+ const reaching=mode==='wall'&&hover?.userData.record!==undefined;
+ const grabbing=handGrab>.15;
+ handTilt=THREE.MathUtils.damp(handTilt,grabbing?-16:reaching?-9:0,8,dt);
+ const scale=grabbing?.93:reaching?1.04:1;
+ // The image's fingertip sits near x=18%, y=9% of the transparent canvas.
+ const width=Math.max(165,Math.min(250,innerWidth*.16));
+ const tx=handX-width*.18,ty=handY-width*.09;
+ handImage.style.transform='translate3d('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px,0) rotate('+handTilt.toFixed(1)+'deg) scale('+scale+')';
+ handImage.style.opacity=handReady&&mode==='wall'&&innerWidth>700?'0.98':'0';
  renderer.render(scene,camera);
 }
 document.documentElement.classList.add('three-ready');
