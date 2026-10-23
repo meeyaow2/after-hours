@@ -309,3 +309,30 @@ test('Spotify-only listening controls preserve official track links',async({page
  await expect(page.locator('#spotifyMount iframe')).toHaveAttribute('src',/open.spotify.com\/embed\/track\/6dOtVTDdiauQNBQEDOtlAB/);
  await expect(page.locator('#vinyl')).not.toHaveClass(/spinning/);
 });
+
+
+test('vinyl extraction and placement use continuous motion',async({page})=>{
+ test.setTimeout(105000);
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:15000});
+ if(!await page.evaluate(()=>!!window.afterHours3D))test.skip(true,'WebGL unavailable');
+ // Record a high-frequency path sample across the extraction/placement boundary.
+ await page.locator('.sleeve').nth(3).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7000});
+ await expect(page.locator('#song')).toContainText('Easy On Me');
+ const state=await page.evaluate(()=>{
+  const scene=window.afterHours3D.scene;
+  const travel=scene.children.find(o=>o.type==='Group'&&o.children.some(c=>c.geometry?.type==='CylinderGeometry'&&Math.abs(c.geometry.parameters?.radiusTop-.60)<.001));
+  const regular=scene.children.find(o=>o.type==='Group'&&o.children.some(c=>c.geometry?.type==='CylinderGeometry'&&Math.abs(c.geometry.parameters?.radiusTop-.692)<.001));
+  return {travel:!!travel,record:!!regular};
+ });
+ expect(state.travel).toBe(true);expect(state.record).toBe(true);
+ await expect.poll(async()=>page.evaluate(()=>{
+  const scene=window.afterHours3D.scene;
+  const regular=scene.children.find(o=>o.type==='Group'&&o.children.some(c=>c.geometry?.type==='CylinderGeometry'&&Math.abs(c.geometry.parameters?.radiusTop-.692)<.001));
+  return regular?.visible;
+ }),{timeout:12000}).toBe(true);
+ await page.keyboard.press('Escape');
+ await expect(page.locator('#game')).not.toHaveClass(/playing-view/);
+});
