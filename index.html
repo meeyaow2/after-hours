@@ -30,13 +30,82 @@
 .shelves{top:8%;height:54%}
 .turntable-mini{bottom:5%;width:min(25vw,340px);height:min(10vw,125px)}
 .table{height:22%;bottom:0}
-}</style></head><body>
+}
+/* Scene composition v4: reserve the top for the wordmark; avoid all album/player collisions */
+.brand{top:2.7%;left:3.4%;z-index:24;font-size:clamp(28px,3vw,48px);pointer-events:none}
+.brand small{font-size:9px;margin-top:9px}
+.rightnote{top:4%;right:3.4%;z-index:24}
+.shelves{
+  top:15.5%;height:42.5%;width:min(88vw,1080px);
+  border:12px solid #2c1c13;
+  box-shadow:0 3px 0 #986b45,0 29px 52px #070403bd,inset 0 3px 0 #a17b50a8;
+  background:linear-gradient(100deg,#26170d,#3f291a 50%,#27180e);
+}
+.slot{padding:4% 19% 9%;border-right:10px solid #28170d;border-bottom:12px solid #2a190f}
+.sleeve{max-width:178px;filter:saturate(.92) contrast(1.05);box-shadow:8px 8px 12px #0009,0 1px 0 #fff2}
+.table{bottom:0;height:22%;background:linear-gradient(180deg,#634229,#301c12 13%,#20130e 38%,#100b09 100%)}
+.table:before{height:15%;top:-10%;background:linear-gradient(95deg,#402618,#936544 24%,#65452d 60%,#382317)}
+.turntable-mini{
+  bottom:4.5%;width:min(33vw,438px);height:min(15vw,190px);
+  border:10px solid #171413;border-radius:13px;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 5px,#ffffff07 6px 6.4px,transparent 7px 13px),
+    linear-gradient(132deg,#867259 0%,#5b4c3d 48%,#342c25 100%);
+  box-shadow:
+    16px 24px 17px #040303d1,
+    inset 0 0 0 2px #dbc3a560,
+    inset 0 10px 15px #fff1,
+    inset 0 -10px 20px #0006;
+}
+.mini-platter{
+  left:4%;top:0%;height:100%;
+  border:9px solid #55534e;
+  background:
+    radial-gradient(circle at 50% 50%,#c49a65 0 15%,#252321 15.3% 16%,transparent 16.5%),
+    repeating-radial-gradient(circle,#131315 0 2px,#242527 2.5px 3px,#0c0c0e 3.4px 4.7px);
+  box-shadow:0 0 0 4px #1a1a18,0 11px 14px #000b,inset 0 0 20px #ffffff13;
+}
+.mini-platter:after{
+  content:'';position:absolute;inset:38%;
+  background:radial-gradient(circle,#d9b57f 0 5%,#b18a61 5.5% 75%,#876341 76%);
+  box-shadow:inset 0 0 0 1px #28231a,inset 0 4px 10px #fff2;
+}
+.mini-arm{right:14%;top:5%;width:7px;height:78%;border-radius:5px;
+ background:linear-gradient(90deg,#59524c,#f0e5d0 46%,#897969);
+ transform:rotate(-26deg);
+ box-shadow:3px 4px 4px #000b}
+.mini-arm:after{content:'';position:absolute;bottom:-6px;left:-4px;width:19px;height:29px;border-radius:3px;background:linear-gradient(100deg,#c3b6a2,#423c39);box-shadow:3px 4px 5px #0009}
+.turntable-mini:before{content:'';position:absolute;right:8%;top:7%;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#e9dfd0,#897967 65%,#302920);box-shadow:3px 3px 5px #0008}
+.deckwood{
+  background:repeating-linear-gradient(1deg,#0000 0 6px,#2b1c1420 7px 8px,#0000 9px 17px),linear-gradient(145deg,#a08361 0%,#5b4433 46%,#302319 100%);
+  border-color:#181513;
+  box-shadow:inset 0 0 0 2px #dec19a66,inset 0 15px 35px #ffffff10,0 15px 20px #0006;
+}
+.platter{border-color:#484844;box-shadow:0 0 0 5px #171617,9px 13px 17px #000b,inset 0 0 25px #000}
+.vinyl{background:repeating-radial-gradient(circle,#111113 0 1px,#28272b 1.5px 2.4px,#171719 2.8px 4px);box-shadow:inset 0 0 38px #0009,inset 0 0 1px 1px #fff2}
+.tonearm{background:linear-gradient(90deg,#554c43,#e5dccc 35%,#bba995 72%,#65594d);box-shadow:4px 6px 6px #0009}
+.tonearm-base{box-shadow:0 0 0 5px #4c3c30,4px 6px 8px #0008}
+@media(max-width:760px){
+ .brand{top:2.5%;font-size:clamp(25px,5vw,35px)}
+ .brand small{font-size:7px;max-width:240px;line-height:1.3}
+ .shelves{top:15%;height:43%;width:96vw;border-width:6px}
+ .slot{padding:4% 7% 9%;border-right-width:5px;border-bottom-width:7px}
+ .turntable-mini{bottom:8%;width:55vw;height:24vw;border-width:6px}
+ .table{bottom:0;height:23%}
+ .mini-platter{border-width:5px}
+ .mini-arm:after{width:11px;height:17px}
+}
+@media(max-height:750px) and (min-width:761px){
+ .shelves{top:17%;height:40%}
+ .turntable-mini{bottom:3%;height:min(13vw,150px)}
+}
+</style></head><body>
 <main class="game" id="game"><div class="room" id="room"><div class="wall"></div><div class="floor"></div><div class="shelves" id="shelves"><div class="slot"><button class="sleeve" type="button" data-record="0" data-track="0nJW01T7XtvILxQgC5J7Wh" aria-label="Pick up When I Was Your Man by Bruno Mars" style="--art:#694535;--arttext:#e7c8a3"><img class="cover-image" src="https://iscale.iheart.com/catalog/album/20634084" alt="Unorthodox Jukebox — Bruno Mars original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Unorthodox Jukebox — Bruno Mars</span></button></div>
-<div class="slot"><button class="sleeve" type="button" data-record="1" data-track="2bdVgAQgosGUJoViVDNeOV" aria-label="Pick up LIMBO by keshi" style="--art:#303d49;--arttext:#c9d7d4"><img class="cover-image" src="https://prodimage.images-bn.com/pimages/0602445106059_p0_v1_s600x595.jpg" alt="GABRIEL — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">GABRIEL — keshi</span></button></div>
+<div class="slot"><button class="sleeve" type="button" data-record="1" data-track="2bdVgAQgosGUJoViVDNeOV" aria-label="Pick up LIMBO by keshi" style="--art:#303d49;--arttext:#c9d7d4"><img class="cover-image" src="https://coverartarchive.org/release/43665699-1d57-4963-82dd-27189b4509d7/front-500" alt="GABRIEL — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">GABRIEL — keshi</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="2" data-track="6dOtVTDdiauQNBQEDOtlAB" aria-label="Pick up BIRDS OF A FEATHER by Billie Eilish" style="--art:#3c4561;--arttext:#e4d3bd"><img class="cover-image" src="https://i5.walmartimages.com/asr/b2784256-d043-42c5-9db2-817b7b51c464.bb82c3e714c6c4d7ce4ff0dfa1b106af.jpeg" alt="HIT ME HARD AND SOFT — Billie Eilish original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">HIT ME HARD AND SOFT — Billie Eilish</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="3" data-track="0gplL1WMoJ6iYaPgMCL0gX" aria-label="Pick up Easy On Me by Adele" style="--art:#705047;--arttext:#e8cdbb"><img class="cover-image" src="https://experiencevinyl.com/cdn/shop/products/adele_30-128200.jpg?v=1634307300" alt="30 — Adele original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">30 — Adele</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="4" data-track="2plbrEY59IikOBgBGLjaoe" aria-label="Pick up Die With A Smile by Lady Gaga and Bruno Mars" style="--art:#644b3e;--arttext:#eadabf"><img class="cover-image" src="https://s-cache.s3.cloudworks.ro/kissfm/cache/1280/0/0/articole/2024/08/16/unnamed-2024-08-16t151428866_7a6e1f7bbb886e6833a5bf971fcbb644.jpg" alt="Die With A Smile — Lady Gaga and Bruno Mars original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Die With A Smile — Lady Gaga and Bruno Mars</span></button></div>
-<div class="slot"><button class="sleeve" type="button" data-record="5" data-track="2aL4lMGhWdPpyPL6COPou7" aria-label="Pick up Soft Spot by keshi" style="--art:#5e534b;--arttext:#efdfd3"><img class="cover-image" src="https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/0c/d6/40/0cd64031-9d03-7bfd-2029-fedb0f4dbd17/24UMGIM70300.rgb.jpg/1200x1200bf-60.jpg" alt="Requiem — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Requiem — keshi</span></button></div>
+<div class="slot"><button class="sleeve" type="button" data-record="5" data-track="2aL4lMGhWdPpyPL6COPou7" aria-label="Pick up Soft Spot by keshi" style="--art:#5e534b;--arttext:#efdfd3"><img class="cover-image" src="https://coverartarchive.org/release/06e6a302-7f89-4a0b-91e1-6face66a9c75/front-500" alt="Requiem — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Requiem — keshi</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="6" data-track="2uIX8YMNjGMD7441kqyyNU" aria-label="Pick up ocean eyes by Billie Eilish" style="--art:#49544c;--arttext:#dcd9bb"><img class="cover-image" src="https://cdn.coveratlas.com/image/thumb/Music115/v4/02/1d/30/021d3036-5503-3ed3-df00-882f2833a6ae/17UM1IM17026.rgb.jpg/5400x5400bb.jpg" alt="dont smile at me — Billie Eilish original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">dont smile at me — Billie Eilish</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="7" data-track="3bNv3VuUOKgrf5hu3YcuRo" aria-label="Pick up Someone Like You by Adele" style="--art:#574d45;--arttext:#e9d6c2"><img class="cover-image" src="https://media.snl.no/media/27547/standard_484_ADELE.jpg" alt="21 — Adele original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">21 — Adele</span></button></div></div><div class="table"></div><button class="turntable-mini" id="turntableMini" aria-label="Inspect turntable"><span class="mini-platter"></span><span class="mini-arm"></span></button></div><div class="ambient"></div><div class="grain"></div><div class="overlay"><div class="brand">after hours.<small>your private listening room · 01:14 am</small></div><div class="rightnote">THE RECORD WALL<br>REACH FOR A SLEEVE</div><div class="hint" id="hint">Move your hand to a record · Click to pick it up</div></div><div class="fallback">Music plays through <a target="_blank" rel="noopener" href="https://open.spotify.com">Spotify</a></div>
 <div class="player-scene" id="playerScene"><button class="back" id="back" type="button">← BACK TO THE RECORD WALL</button><div class="deck"><div class="deckwood"></div><div class="platter"><div class="vinyl" id="vinyl"><div class="label" id="label">AFTER<br>HOURS<small>33⅓ RPM</small></div><div class="spindle"></div></div></div><div class="tonearm-base"></div><div class="tonearm" id="tonearm"></div><div class="controlpanel"><h2 class="picked-title" id="song">Choose a record</h2><p class="picked-by" id="artist">at the record wall</p><div class="disc-controls"><button class="metalbutton" id="start" type="button" aria-label="Lower needle and show music player" title="Lower the needle">▶</button><button class="metalbutton" id="stop" type="button" aria-label="Stop and lift needle" title="Stop">■</button><span class="control-label" id="needleStatus">NEEDLE UP</span></div><div class="local-player" id="localPlayer" style="grid-column:1/-1"><label class="import-label" for="audioFile">＋ ADD YOUR AUDIO FILE</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/mp4,audio/*" hidden><p class="spotify-note" id="localStatus">Add an MP3 or other audio file you are permitted to use. Then press the physical PLAY button.</p><div class="seekline"><span id="elapsed">0:00</span><input type="range" id="localSeek" value="0" min="0" max="1000" step="1" aria-label="Song position" disabled><span id="duration">0:00</span></div><button class="clear-audio" id="clearAudio" type="button" hidden>REMOVE IMPORTED AUDIO</button></div><div class="spotify-mount" id="spotifyMount" style="grid-column:1/-1"><p class="spotify-note">Or listen using Spotify’s official embedded player (preview/account restrictions apply).</p></div><p class="spotify-note">Songs are not bundled. Your own audio remains on this device; this site does not upload it.</p></div></div></div><div class="hand" id="hand" aria-hidden="true"><svg viewBox="0 0 92 132"><path d="M19 130 10 99Q2 86 11 71L20 50Q25 42 32 48L32 24Q32 11 42 12Q52 13 52 25L52 60 58 42Q63 28 73 35Q82 41 75 54L69 98 70 130Z" fill="#b38b6d" stroke="#4d3327" stroke-width="4"/><path d="M18 99Q38 108 53 99" fill="none" stroke="#855d46" stroke-width="3"/><path d="M15 114 70 110 77 132 22 132Z" fill="#f0e5d8" stroke="#6b5346" stroke-width="3"/><path d="M24 124 74 121 78 132 24 132Z" fill="#2a2d2c"/></svg></div><div class="fly" id="fly"></div></main>
