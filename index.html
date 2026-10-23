@@ -343,6 +343,16 @@
 @keyframes startup-breathe{from{opacity:.4;transform:scaleX(.4)}to{opacity:.95;transform:scaleX(1)}}
 .game.scene-settled .startup-veil{opacity:0;visibility:hidden;pointer-events:none}
 @media(prefers-reduced-motion:reduce){.startup-veil{transition:none}.startup-indicator{animation:none}}
+
+/* Mobile header: reserve independent positions for the brand and Quiet Mode.
+   The decorative helper text is hidden on compact screens to prevent overlap. */
+@media(max-width:700px){
+ .game .rightnote,.three-ready .game .rightnote{display:none!important}
+ .game .quiet-switch{top:14px;right:12px;left:auto;z-index:38;max-width:calc(100vw - 150px);white-space:nowrap}
+ .game .brand{left:12px;top:16px;max-width:calc(100% - 158px);font-size:clamp(26px,7vw,33px)}
+ .game .brand small{font-size:8px;line-height:1.4;letter-spacing:.06em;max-width:180px}
+ .three-ready .mobile-collection{top:96px}
+}
 </style></head><body>
 <main class="game" id="game"><div class="startup-veil" id="startupVeil" aria-live="polite" aria-label="Preparing the listening room"><span class="startup-wordmark">after hours.</span><span class="startup-caption" id="startupCaption">Preparing your quiet space…</span><span class="startup-indicator" aria-hidden="true"></span></div><section class="mobile-collection" id="mobileCollection" aria-label="Choose a record"><div class="mobile-intro"><span>THE COLLECTION</span><p>A little space to escape the noise. Pick a record and stay a while.</p></div><div class="mobile-record-grid" id="mobileRecordGrid"></div></section><div class="room" id="room"><div class="wall"></div><div class="floor"></div><div class="shelves" id="shelves"><div class="slot"><button class="sleeve" type="button" data-record="0" data-track="0nJW01T7XtvILxQgC5J7Wh" aria-label="Pick up When I Was Your Man by Bruno Mars" style="--art:#694535;--arttext:#e7c8a3"><img class="cover-image" src="https://iscale.iheart.com/catalog/album/20634084" alt="Unorthodox Jukebox — Bruno Mars original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Unorthodox Jukebox — Bruno Mars</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="1" data-track="2bdVgAQgosGUJoViVDNeOV" aria-label="Pick up LIMBO by keshi" style="--art:#303d49;--arttext:#c9d7d4"><img class="cover-image" src="https://coverartarchive.org/release/43665699-1d57-4963-82dd-27189b4509d7/front-500" alt="GABRIEL — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">GABRIEL — keshi</span></button></div>
