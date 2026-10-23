@@ -439,10 +439,34 @@ function resize(){
  renderer.setSize(innerWidth,innerHeight);
 }
 addEventListener('resize',resize);resize();
+/* Screen-space sleeve targets compensate for perspective, narrow edge-on faces,
+   and touch imprecision without making the entire wall accidentally clickable. */
+function sleeveAtScreenPoint(clientX,clientY){
+ const bounds=cv.getBoundingClientRect();
+ if(!bounds.width||!bounds.height)return null;
+ let closest=null,closestScore=Infinity;
+ for(const sleeve of vinylHits){
+  const center=sleeve.position.clone();
+  center.z+=.075;center.project(camera);
+  if(center.z>1||center.z< -1)continue;
+  const pixelX=bounds.left+(center.x+1)*bounds.width*.5;
+  const pixelY=bounds.top+(1-center.y)*bounds.height*.5;
+  const edgeX=sleeve.position.clone().add(new THREE.Vector3(.59,0,.075)).project(camera);
+  const edgeY=sleeve.position.clone().add(new THREE.Vector3(0,.59,.075)).project(camera);
+  const halfW=Math.max(25,Math.abs(edgeX.x-center.x)*bounds.width*.5+7);
+  const halfH=Math.max(25,Math.abs(edgeY.y-center.y)*bounds.height*.5+7);
+  const dx=(clientX-pixelX)/halfW,dy=(clientY-pixelY)/halfH;
+  const score=dx*dx+dy*dy;
+  if(Math.abs(dx)<=1&&Math.abs(dy)<=1&&score<closestScore){
+   closest=sleeve;closestScore=score;
+  }
+ }
+ return closest;
+}
 function testHit(e){
  const bounds=cv.getBoundingClientRect();pointer.set((e.clientX-bounds.left)/bounds.width*2-1,-(e.clientY-bounds.top)/bounds.height*2+1);
  ray.setFromCamera(pointer,camera);
- return ray.intersectObjects(mode==='wall'?vinylHits:buttons,false)[0]?.object||null
+ return mode==='wall'?(sleeveAtScreenPoint(e.clientX,e.clientY)||ray.intersectObjects(vinylHits,false)[0]?.object||null):(ray.intersectObjects(buttons,false)[0]?.object||null)
 }
 function move(e){
  pointerActive=true;
