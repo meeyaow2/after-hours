@@ -1,40 +1,39 @@
-# Bops 🎧 — Music Playground
+# After Hours — Virtual Jazz Listening Bar
 
-**Make a little noise.** A playful, retro-pop music studio that runs in your browser.
+*A place to stay for a while.*
 
-Bops is designed for people who want to make beats and melodies without needing production software or formal music training.
+After Hours reimagines the original Bops Music Playground as a cinematic, first-person-inspired virtual listening lounge. Wander between the record wall and turntable, browse fictional albums, and listen to original browser-synthesized jazz-inspired sketches.
 
-## Features
+## Live website
 
-- 16-step drum sequencer with synth-based percussion
-- Editable bass and melody note grids
-- Ten musical vibes: Pop, Lo-fi, Electro, Dreamy, Funk, House, Ambient, Trap, Arcade, and R&B
-- Song arrangement across multiple bars
-- Multiple instrument timbres, tempo/key controls, mute and volume
-- Pattern shuffling, undo, and responsive editing
-- Browser-based project saving
-- WAV audio export
+**https://meeyaow2.github.io/ops-music-playground/**
 
-## Try it
+The original GitHub repository and GitHub Pages URL are preserved.
 
-Open [Bops on GitHub Pages](https://meeyaow2.github.io/ops-music-playground/) once Pages has been enabled.
+## Experience
 
-Alternatively, download `index.html` and open it locally in a modern desktop browser.
+- **Record wall:** Browse eight original album concepts, read liner notes, and choose from three instrumental sketches on each record.
+- **Turntable:** Lower or lift the needle; the record and tonearm respond to playback.
+- **Listening controls:** Play/pause, previous/next track, seek, and volume.
+- **Your evening:** Choose a seat, order a fictional drink, switch atmospheric descriptions, and toggle rain ambience.
+- **Responsive:** Record collection and player layouts adapt for tablet and phone sizes.
 
-## Built with
+## Music and licensing
 
-HTML, CSS, and JavaScript with the Web Audio API. No API key, subscription, or backend required. Browser audio starts after a user interaction.
+This prototype generates its music with the **Web Audio API**; it does not stream commercially released jazz recordings or download copyrighted tracks. All artists and album titles in the collection are fictional, and each track is a generative instrumental sketch rather than a professionally recorded song. Playback starts after user interaction due to browser autoplay restrictions.
 
-## Local data
+## Run locally
 
-Projects are saved locally in the browser. Clearing site data may remove saved tracks; they are not synced between devices.
+Open `index.html` in a modern browser with JavaScript enabled. No dependencies, build command, or API credentials are required.
 
-## GitHub Pages setup
+## GitHub Pages
 
-Go to **Settings → Pages**, select **Deploy from a branch**, choose **main** and **/(root)**, and save. Your URL will be:
+The project is a static site. Go to **Settings → Pages → Deploy from a branch → main → /(root)**.
 
-https://meeyaow2.github.io/ops-music-playground/
+## Development notes
 
-## Status
+This is an atmospheric, perspective-styled MVP — **not yet a freely navigable 3D environment**. A true 3D room, more detailed record interactions, higher-fidelity music, and licensed audio integration are potential later additions.
 
-Early MVP. Please test playback, arrangement, saving, and WAV export in a browser before wider promotion.
+## Previous project
+
+Originally called **Bops**, a retro-pop beat sequencer. This repository now hosts its successor concept, After Hours.
