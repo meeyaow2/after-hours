@@ -65,11 +65,28 @@ block(2.79,.075,1.98,black,0,.79,2.4);
 const platter=cylinder(.76,.10,steel,-.53,1.075,2.4);
 const platterBase=cylinder(.70,.045,black,-.53,1.142,2.4);
 const recordGroup=new THREE.Group();recordGroup.position.set(-.53,1.174,2.4);scene.add(recordGroup);
-const record=new THREE.Mesh(new THREE.CylinderGeometry(.692,.692,.012,112),new THREE.MeshStandardMaterial({color:'#101113',metalness:.2,roughness:.33}));recordGroup.add(record);
+const record=new THREE.Mesh(new THREE.CylinderGeometry(.692,.692,.012,112),new THREE.MeshPhysicalMaterial({color:'#101113',metalness:.26,roughness:.27,clearcoat:.85,clearcoatRoughness:.14}));recordGroup.add(record);
 const groove=new THREE.Group();groove.rotation.x=-Math.PI/2;groove.position.y=.008;
 for(let r=.26;r<.68;r+=.019){const mesh=new THREE.Mesh(new THREE.TorusGeometry(r,.0015,3,100),new THREE.MeshStandardMaterial({color:r% .04>.02?'#262628':'#303032',metalness:.52,roughness:.35}));groove.add(mesh)}
 recordGroup.add(groove);
 const label=new THREE.Mesh(new THREE.CylinderGeometry(.205,.205,.018,60),labelMat);label.position.y=.019;recordGroup.add(label);
+function updateRecordLabel(index){
+ const item=albums[index];if(!item)return;
+ const artist=item.getAttribute('aria-label')?.split(' by ').pop()||'AFTER HOURS';
+ const title=item.getAttribute('aria-label')?.replace(/^Pick up /,'').split(' by ')[0]||'THE COLLECTION';
+ const c=document.createElement('canvas');c.width=512;c.height=512;
+ const ctx=c.getContext('2d');ctx.fillStyle='#c7a57d';ctx.fillRect(0,0,512,512);
+ ctx.strokeStyle='#624b35';ctx.lineWidth=9;ctx.beginPath();ctx.arc(256,256,236,0,Math.PI*2);ctx.stroke();
+ ctx.fillStyle='#2b231e';ctx.textAlign='center';ctx.font='bold 25px Georgia';
+ ctx.fillText('AFTER HOURS',256,124);ctx.font='bold 22px Georgia';
+ for(let i=0;i<Math.min(title.length,24);i+=15)ctx.fillText(title.toUpperCase().slice(i,i+15),256,210+(i/15)*35);
+ ctx.font='23px Georgia';ctx.fillText(artist.toUpperCase().slice(0,22),256,334);
+ ctx.font='19px Georgia';ctx.fillText('33⅓ RPM',256,395);
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
+ const old=label.material;label.material=new THREE.MeshStandardMaterial({map:tex,roughness:.65,metalness:.03});
+ if(old!==labelMat)old.dispose();
+}
+
 const spindle=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.055,20),steel);spindle.position.y=.055;recordGroup.add(spindle);
 const toneBase=cylinder(.13,.13,steel,.94,1.055,1.9);
 const tonePivot=new THREE.Group();tonePivot.position.set(.94,1.16,1.9);scene.add(tonePivot);
@@ -136,6 +153,18 @@ function resetSleeves(){
  for(const item of vinylHits){item.position.copy(item.userData.home);item.rotation.set(0,-.05,0);item.scale.setScalar(1);item.renderOrder=0;}
  pickupState.active=false;selectedSleeve=null;
 }
+
+function animateSleeveHover(dt){
+ const speed=1-Math.exp(-dt*11);
+ for(const item of vinylHits){
+  if(item===selectedSleeve)continue;
+  const active=mode==='wall'&&hover===item;
+  const aim=item.userData.home.clone();if(active)aim.z+=.16;
+  item.position.lerp(aim,speed);
+  item.scale.setScalar(THREE.MathUtils.damp(item.scale.x,active?1.055:1,10,dt));
+ }
+}
+
 function animatePickup(dt){
  if(!pickupState.active||!pickupState.album)return;
  pickupState.elapsed+=dt;
@@ -144,7 +173,10 @@ function animatePickup(dt){
  item.position.lerpVectors(pickupState.from,new THREE.Vector3(pickupState.from.x*.12,2.4,.6),ease);
  item.rotation.y=-.05+ease*.25;item.rotation.x=-ease*.13;
  item.scale.setScalar(1+ease*.2);
- if(t>=1)pickupState.active=false;
+ if(t>=1){pickupState.active=false;
+  // The sleeve has been lifted; a selected record label is now on the platter.
+  item.position.copy(item.userData.home);item.rotation.set(0,-.05,0);item.scale.setScalar(1);
+}
 }
 
 const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(0,0);
@@ -205,7 +237,7 @@ cv.addEventListener('click',e=>{
  if(!hit&&mode==='wall')return;
  if(mode==='wall'){
    const idx=hit.userData.record;if(idx===undefined)return;
-   picked=idx;beginPickup(idx);const native=albums[idx];
+   picked=idx;beginPickup(idx);updateRecordLabel(idx);const native=albums[idx];
    native.click(); // reuse existing local audio setup, selection and camera state
  }else{
    if(hit?.userData.action==='start'){document.getElementById('start').click();return;}
@@ -229,6 +261,7 @@ function animate(){
  const dt=Math.min(.05,clock.getDelta());
  targetMode=game.classList.contains('playing-view')?'deck':'wall';
  animatePickup(dt);
+ animateSleeveHover(dt);
  const towards=targetMode==='deck'?deckCamera:wallCamera;
  const gaze=targetMode==='deck'?deckLook:wallLook;
  camera.position.lerp(towards,1-Math.exp(-dt*2.5));
@@ -259,5 +292,5 @@ function animate(){
  renderer.render(scene,camera);
 }
 document.documentElement.classList.add('three-ready');
-window.afterHours3D={renderer,scene,camera};
+window.afterHours3D={renderer,scene,camera,selectRecord(index){updateRecordLabel(index);beginPickup(index)},reset:resetSleeves};
 animate();
