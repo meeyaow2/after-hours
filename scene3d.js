@@ -5,7 +5,7 @@ const cv=document.createElement('canvas');
 cv.id='world3d';cv.setAttribute('aria-label','Interactive three dimensional record room');
 cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;touch-action:manipulation;';
 const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:false,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<800?1.35:1.75));renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.09;
 game.insertBefore(cv,room);
@@ -217,7 +217,7 @@ function pointHand(e){
 }
 addEventListener('pointermove',pointHand,{passive:true});
 
-function resize(){camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<700?63:48;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+function resize(){camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<700?63:48;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<800?1.35:1.75));renderer.setSize(innerWidth,innerHeight)}
 addEventListener('resize',resize);resize();
 function testHit(e){
  const bounds=cv.getBoundingClientRect();pointer.set((e.clientX-bounds.left)/bounds.width*2-1,-(e.clientY-bounds.top)/bounds.height*2+1);
@@ -248,9 +248,35 @@ cv.addEventListener('click',e=>{
    if(!onTable&&typeof window.exitTurntable==='function')window.exitTurntable();
  }
 });
+
+let keyboardIndex=-1;
+function keyboardPick(index){
+ if(index<0||index>=vinylHits.length||game.classList.contains('playing-view'))return;
+ const item=vinylHits[index];if(!item)return;
+ hover=item;keyboardIndex=index;
+ document.getElementById('hint').textContent='Selected: '+albums[index].getAttribute('aria-label').replace('Pick up ','')+' · Press Enter to take the record';
+}
+addEventListener('keydown',e=>{
+ if(e.defaultPrevented||e.ctrlKey||e.altKey||e.metaKey)return;
+ const tag=document.activeElement?.tagName;
+ if(['INPUT','SELECT','TEXTAREA','BUTTON','SUMMARY','A'].includes(tag))return;
+ if(!game.classList.contains('playing-view')){
+  const cols=6;
+  if(e.key==='ArrowRight'){e.preventDefault();keyboardPick((keyboardIndex+1+albums.length)%albums.length);}
+  else if(e.key==='ArrowLeft'){e.preventDefault();keyboardPick((keyboardIndex-1+albums.length)%albums.length);}
+  else if(e.key==='ArrowDown'){e.preventDefault();keyboardPick((keyboardIndex+cols+albums.length)%albums.length);}
+  else if(e.key==='ArrowUp'){e.preventDefault();keyboardPick((keyboardIndex-cols+albums.length)%albums.length);}
+  else if(e.key==='Enter'&&keyboardIndex>=0){e.preventDefault();const index=keyboardIndex;beginPickup(index);updateRecordLabel(index);albums[index].click();}
+ }else if(e.key===' '){e.preventDefault();document.getElementById('start').click();}
+});
+cv.addEventListener('webglcontextlost',event=>{
+ event.preventDefault();
+ document.documentElement.classList.remove('three-ready');
+ document.getElementById('hint').textContent='3D graphics paused. Reload the page to restore the listening room.';
+});
 const observer=new MutationObserver(()=>{
  targetMode=game.classList.contains('playing-view')?'deck':'wall';
- if(targetMode==='wall'){picked=-1;resetSleeves();}
+ if(targetMode==='wall'){picked=-1;keyboardIndex=-1;resetSleeves();}
 });observer.observe(game,{attributes:true,attributeFilter:['class']});
 const dragRoot=cv;
 let grabStart=null;
