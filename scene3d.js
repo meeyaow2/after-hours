@@ -7,13 +7,13 @@ cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;display:block
 const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:false,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.09;
 game.insertBefore(cv,room);
 const scene=new THREE.Scene();scene.background=new THREE.Color('#17100c');scene.fog=new THREE.FogExp2('#20150e',.025);
 const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.08,100);
 camera.position.set(0,2.55,9.1);
 const wallCamera=new THREE.Vector3(0,2.65,7.8),wallLook=new THREE.Vector3(0,2.4,-2.0);
-const deckCamera=new THREE.Vector3(0,3.65,6.35),deckLook=new THREE.Vector3(.22,1.02,2.4);
+const deckCamera=new THREE.Vector3(0,3.3,6.55),deckLook=new THREE.Vector3(0,1.02,2.4);
 const look=new THREE.Vector3().copy(wallLook);
 camera.lookAt(look);
 const hemi=new THREE.HemisphereLight(0xf6d1a6,0x1c1512,1.35);scene.add(hemi);
@@ -33,6 +33,30 @@ block(8.8,3.2,.20,sideWood,0,2.6,-3.09);
 for(const y of [1.03,2.57,4.1])block(8.95,.14,.48,shelfMat,0,y,-2.79);
 for(const x of [-4.45,-2.967,-1.483,0,1.483,2.967,4.45])block(.13,3.15,.52,shelfMat,x,2.55,-2.8);
 for(const y of [1.8,3.34]){const led=new THREE.PointLight(0xc08a4e,2.5,3);led.position.set(0,y,-2.1);scene.add(led)}
+
+/* Warm layered room materials and furnishings */
+function makeWoodgrain(){
+ const c=document.createElement('canvas');c.width=512;c.height=256;const p=c.getContext('2d');
+ p.fillStyle='#76543a';p.fillRect(0,0,512,256);let n=43;
+ const rand=()=>{n=(n*1664525+1013904223)>>>0;return n/4294967296};
+ for(let i=0;i<700;i++){const x=rand()*512,y=rand()*256;p.strokeStyle=rand()>.45?'#d8a77d22':'#27150e42';p.lineWidth=rand()*1.3+.2;p.beginPath();p.moveTo(x,y);p.bezierCurveTo(x+100,y+rand()*3,x+260,y-3+rand()*6,512,y);p.stroke();}
+ const texture=new THREE.CanvasTexture(c);texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.repeat.set(1.5,1);return texture;
+}
+const woodgrain=makeWoodgrain();
+for(const material of [wood,shelfMat]){material.map=woodgrain;material.needsUpdate=true}
+block(8,.025,4.2,m('#4c352c',.95),0,-.015,2.4,false);
+const roomGlow=new THREE.PointLight(0xffa85c,18,9);roomGlow.position.set(-5,3.2,.6);scene.add(roomGlow);
+for(const x of [-5.6,5.6]){
+ block(.83,1.55,.75,m('#29221d'),x,.93,-2.4);
+ const speaker=new THREE.Mesh(new THREE.TorusGeometry(.25,.052,10,32),m('#101013'));speaker.position.set(x,1.15,-1.99);scene.add(speaker);
+ const tweeter=new THREE.Mesh(new THREE.SphereGeometry(.10,16,12),m('#101013'));tweeter.position.set(x,1.64,-1.99);scene.add(tweeter);
+}
+const sideboard=block(2.1,.18,.78,m('#74523b'),6.7,.75,-2.5);
+for(let i=0;i<4;i++){block(.62,.075,.38,m(['#99745a','#5b5346','#c7a37e','#584238'][i]),6.4,.9+i*.08,-2.4)}
+const globe=new THREE.Mesh(new THREE.SphereGeometry(.29,24,14),new THREE.MeshStandardMaterial({color:0xffd9a2,emissive:0xffb16b,emissiveIntensity:1.6,roughness:1}));
+globe.position.set(7.18,1.22,-2.3);scene.add(globe);
+const globeLight=new THREE.PointLight(0xffbf7c,9,6);globeLight.position.copy(globe.position);scene.add(globeLight);
+
 // The foreground cabinet and turntable are physical world objects, not HTML illustrations.
 block(5.4,.84,2.35,wood,0,.23,2.4);
 const tableTop=block(5.55,.13,2.48,shelfMat,0,.73,2.4);
@@ -61,6 +85,8 @@ for(const [x,z,type] of [[.83,2.92,'start'],[1.20,2.92,'stop']]){
  const pin=cylinder(.055,.059,black,x,1.092,z);pin.userData.action=type;buttons.push(pin)
 }
 const vinylHits=[];
+const pickupState={active:false,album:null,from:null,elapsed:0,duration:1.2};
+let selectedSleeve=null;
 const albums=[...document.querySelectorAll('.sleeve')];
 const texLoader=new THREE.TextureLoader();texLoader.setCrossOrigin('anonymous');
 for(let i=0;i<albums.length;i++){
@@ -80,7 +106,7 @@ for(let i=0;i<albums.length;i++){
  const front=new THREE.MeshStandardMaterial({map:placeholder,roughness:.83});
  const geo=new THREE.BoxGeometry(1.18,1.18,.075);
  const box=new THREE.Mesh(geo,[m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),front,m('#1b1511')]);
- box.position.set(x,y,-2.36);box.rotation.y=-.05;box.castShadow=true;box.userData.record=i;scene.add(box);vinylHits.push(box);
+ box.position.set(x,y,-2.36);box.rotation.y=-.05;box.castShadow=true;box.userData.record=i;box.userData.home=box.position.clone();scene.add(box);vinylHits.push(box);
  // Update the real 3D sleeve whenever the verified cover is loaded by the page.
  // Keep our canvas label as a fallback when an image host disallows WebGL textures.
  function setCover(url){
@@ -97,10 +123,36 @@ for(let i=0;i<albums.length;i++){
  if(raw?.src)setCover(raw.src);
  cover.addEventListener('coverready',e=>setCover(e.detail.url));
 }
+
+function beginPickup(index){
+ const item=vinylHits[index];
+ if(!item||pickupState.active)return;
+ pickupState.active=true;pickupState.album=item;
+ pickupState.from=item.position.clone();pickupState.elapsed=0;
+ pickupState.duration=reducedMotion?.18:1.2;selectedSleeve=item;
+ item.renderOrder=12;
+}
+function resetSleeves(){
+ for(const item of vinylHits){item.position.copy(item.userData.home);item.rotation.set(0,-.05,0);item.scale.setScalar(1);item.renderOrder=0;}
+ pickupState.active=false;selectedSleeve=null;
+}
+function animatePickup(dt){
+ if(!pickupState.active||!pickupState.album)return;
+ pickupState.elapsed+=dt;
+ const t=Math.min(1,pickupState.elapsed/pickupState.duration);
+ const ease=t*t*(3-2*t),item=pickupState.album;
+ item.position.lerpVectors(pickupState.from,new THREE.Vector3(pickupState.from.x*.12,2.4,.6),ease);
+ item.rotation.y=-.05+ease*.25;item.rotation.x=-ease*.13;
+ item.scale.setScalar(1+ease*.2);
+ if(t>=1)pickupState.active=false;
+}
+
 const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(0,0);
 let hover=null,mode='wall',targetMode='wall',animatingRecord=false,picked=-1,handMeshes=null;
 let pointerActive=false,handGrab=0;
 const clock=new THREE.Clock();
+let motorSpeed=0;
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* A DOM-backed photographic hand sits above the WebGL canvas.
    This deliberately avoids camera-plane occlusion, culling and material-opacity issues. */
 const handImage=document.createElement('img');
@@ -153,7 +205,7 @@ cv.addEventListener('click',e=>{
  if(!hit&&mode==='wall')return;
  if(mode==='wall'){
    const idx=hit.userData.record;if(idx===undefined)return;
-   picked=idx;const native=albums[idx];
+   picked=idx;beginPickup(idx);const native=albums[idx];
    native.click(); // reuse existing local audio setup, selection and camera state
  }else{
    if(hit?.userData.action==='start'){document.getElementById('start').click();return;}
@@ -166,7 +218,7 @@ cv.addEventListener('click',e=>{
 });
 const observer=new MutationObserver(()=>{
  targetMode=game.classList.contains('playing-view')?'deck':'wall';
- if(targetMode==='wall')picked=-1;
+ if(targetMode==='wall'){picked=-1;resetSleeves();}
 });observer.observe(game,{attributes:true,attributeFilter:['class']});
 const dragRoot=cv;
 let grabStart=null;
@@ -176,6 +228,7 @@ function animate(){
  requestAnimationFrame(animate);
  const dt=Math.min(.05,clock.getDelta());
  targetMode=game.classList.contains('playing-view')?'deck':'wall';
+ animatePickup(dt);
  const towards=targetMode==='deck'?deckCamera:wallCamera;
  const gaze=targetMode==='deck'?deckLook:wallLook;
  camera.position.lerp(towards,1-Math.exp(-dt*2.5));
@@ -183,9 +236,12 @@ function animate(){
  camera.lookAt(look);
  mode=targetMode;
  // Spin the record only while local playback/needle state is active.
- if(document.getElementById('vinyl').classList.contains('spinning'))recordGroup.rotation.y-=dt*Math.PI*1.1;
+ const playing=document.getElementById('vinyl').classList.contains('spinning');
+ motorSpeed=THREE.MathUtils.damp(motorSpeed,playing?Math.PI*1.1:0,playing?2.5:4.5,dt);
+ recordGroup.rotation.y-=motorSpeed*dt;
  const needleDown=document.getElementById('tonearm').classList.contains('down');
  tonePivot.rotation.y=THREE.MathUtils.damp(tonePivot.rotation.y,needleDown?-.45:.16,3.6,dt);
+ tonePivot.rotation.x=THREE.MathUtils.damp(tonePivot.rotation.x,needleDown?.02:-.09,4,dt);
  // Position a real cutout above WebGL, with its fingertip next to the pointer.
  const ease=1-Math.exp(-dt*14);
  handX=THREE.MathUtils.lerp(handX,handTargetX,ease);
