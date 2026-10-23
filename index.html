@@ -334,34 +334,55 @@ ownedAudio.addEventListener('error',()=>{if(sourceMode==='radio'){byId('radioSta
 
 const game=byId('game'), hint=byId('hint'), hand=byId('hand');
 function setHint(text){hint.textContent=text;}
-function lift(){needleDown=false;byId('vinyl').classList.remove('spinning');byId('tonearm').classList.remove('down');byId('needleStatus').textContent='NEEDLE UP';}
-function place(index, button){
- if(moving)return;
+let selectionTimer=null;
+let selectionGeneration=0;
+function lift(){updateVinylState(false);}
+function place(index,button){
+ if(moving||index<0||index>=tracks.length)return;
  moving=true;
- const data=tracks[index];chosen=index;lift();stopOwned();sourceMode='none';byId('radioState').textContent='READY';byId('radioPlay').textContent='▶ PLAY JAZZ';byId('spotifyMount').replaceChildren();currentIframe=null;prepareLocal(index);
+ const generation=++selectionGeneration;
+ const data=tracks[index];
+ chosen=index;lift();stopOwned();
+ sourceMode='none';
+ byId('sourceDrawer').open=false;
+ byId('radioState').textContent='READY';
+ byId('radioPlay').textContent='▶ PLAY JAZZ';
+ byId('spotifyMount').replaceChildren();
+ currentIframe=null;
+ prepareLocal(index);
+ setHint('Taking '+data.song+' from the shelf…');
+ const complete=()=>{
+   if(generation!==selectionGeneration)return;
+   moving=false;selectionTimer=null;
+   game.classList.add('playing-view');
+   byId('song').textContent=data.song;
+   byId('artist').textContent=data.artist;
+   byId('label').style.background=data.color;
+   byId('label').style.color=data.ink;
+   setHint('Lower the needle to listen · Available audio sources are under Listening Options');
+ };
  if(document.documentElement.classList.contains('three-ready')){
-  setHint('You take '+data.song+' from the shelf…');
-  setTimeout(()=>{moving=false;game.classList.add('playing-view');byId('song').textContent=data.song;byId('artist').textContent=data.artist;byId('label').style.background=data.color;byId('label').style.color=data.ink;setHint('Lower the needle with START, or import your own audio.');},1100);
-  return;
+   selectionTimer=setTimeout(complete,matchMedia('(prefers-reduced-motion: reduce)').matches?180:1180);
+   return;
  }
  const rect=button.getBoundingClientRect(),fly=byId('fly');
  fly.style.cssText='display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,'+data.color+',#17110e);color:'+data.ink+';left:'+rect.left+'px;top:'+rect.top+'px;width:'+rect.width+'px;height:'+rect.height+'px;';
  fly.textContent=data.artist;fly.classList.remove('flymove');
- setHint('You pick up '+data.song+' by '+data.artist+'…');
  requestAnimationFrame(()=>requestAnimationFrame(()=>{fly.classList.add('flymove');fly.style.left=(innerWidth*.50-60)+'px';fly.style.top=(innerHeight*.66-40)+'px';fly.style.width='120px';fly.style.height='120px';}));
- setTimeout(()=>{fly.style.display='none';fly.classList.remove('flymove');moving=false;game.classList.add('playing-view');byId('song').textContent=data.song;byId('artist').textContent=data.artist;byId('label').style.background=data.color;byId('label').style.color=data.ink;byId('label').innerHTML='<span>'+data.artist.replace(/&/g,'&amp;')+'</span><small>33⅓ RPM</small>';setHint('Lower the needle · Listen with the official Spotify player');},840);
+ selectionTimer=setTimeout(()=>{fly.style.display='none';fly.classList.remove('flymove');complete();},840);
 }
 async function lower(){
  if(chosen<0){setHint('Pick an album from the wall first.');return;}
  if(sourceMode==='local'&&ownedAudio.getAttribute('src')){
+  if(!ownedAudio.paused){ownedAudio.pause();setHint('Paused · Press ▶ to resume');return;}
   try{await ownedAudio.play();localPlaying=true;sourceMode='local';updateVinylState(true);setHint('Now playing your imported audio · Press ■ to stop');}
   catch(e){updateVinylState(false);setHint('Unable to play audio. Try importing a supported file again.');}
   return;
  }
  if(sourceMode==='radio'){await playJazz();return;}
- if(needleDown)return;
  // Spotify playback happens in its own player; do not animate the vinyl before audio starts.
  byId('needleStatus').textContent='SPOTIFY · PLAY INSIDE';
+ byId('sourceDrawer').open=true;
  if(!currentIframe){const iframe=document.createElement('iframe');iframe.className='spotify';iframe.title=tracks[chosen].song+' — Spotify player';iframe.src=tracks[chosen].album?'https://open.spotify.com/embed/album/'+tracks[chosen].album:'https://open.spotify.com/embed/track/'+tracks[chosen].id;iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';iframe.loading='eager';iframe.referrerPolicy='strict-origin-when-cross-origin';byId('spotifyMount').replaceChildren(iframe);currentIframe=iframe;}
  setHint('Use Play in Spotify · Streaming cannot be controlled directly by this turntable.');
 }
@@ -417,7 +438,11 @@ function applyVolume(value){
 masterVolume.addEventListener('input',()=>applyVolume(Number(masterVolume.value)/100));
 muteVolume.addEventListener('click',()=>applyVolume(ownedAudio.muted?lastNonZeroVolume:0));
 function exitTurntable(){
- if(!game.classList.contains('playing-view'))return;
+ if(!game.classList.contains('playing-view')&&!moving)return;
+ selectionGeneration++;
+ if(selectionTimer!==null){clearTimeout(selectionTimer);selectionTimer=null;}
+ moving=false;
+ byId('fly').style.display='none';
  stop();
  game.classList.remove('playing-view');
  chosen=-1;
@@ -428,6 +453,21 @@ window.exitTurntable=exitTurntable;
 
 byId('turntableMini').addEventListener('click',()=>{if(chosen<0)setHint('Choose a record from the wall first');else game.classList.add('playing-view');});
 byId('start').addEventListener('click',lower);byId('stop').addEventListener('click',stop);
+function updateAudioButtons(){
+ const playing=sourceMode!=='none' && !ownedAudio.paused && !ownedAudio.ended && !!ownedAudio.getAttribute('src');
+ byId('start').textContent=playing?'Ⅱ':'▶';
+ byId('start').setAttribute('aria-label',playing?'Pause direct audio':'Play selected audio');
+ byId('start').title=playing?'Pause direct audio':'Play selected audio';
+ if(sourceMode==='radio'){
+  byId('radioState').textContent=playing?'PLAYING':(ownedAudio.ended?'ENDED':'PAUSED');
+  byId('radioPlay').textContent=playing?'Ⅱ PAUSE JAZZ':'▶ PLAY JAZZ';
+ }
+}
+ownedAudio.addEventListener('playing',()=>{updateVinylState(true);updateAudioButtons();});
+ownedAudio.addEventListener('pause',()=>{updateVinylState(false);updateAudioButtons();});
+ownedAudio.addEventListener('ended',()=>{updateVinylState(false);updateAudioButtons();});
+ownedAudio.addEventListener('error',()=>{updateVinylState(false);updateAudioButtons();});
+byId('sourceDrawer').addEventListener('toggle',()=>{byId('sourceDrawer').setAttribute('aria-expanded',String(byId('sourceDrawer').open))});
 if(matchMedia('(pointer:fine)').matches){addEventListener('pointermove',event=>{hand.style.left=event.clientX+'px';hand.style.top=event.clientY+'px';hand.classList.toggle('reach',Boolean(event.target.closest('.sleeve,.metalbutton,.back')));});}
 addEventListener('keydown',event=>{if(event.key==='Escape'&&game.classList.contains('playing-view'))exitTurntable();});
 
