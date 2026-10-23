@@ -7,7 +7,7 @@
 .overlay{position:absolute;z-index:11;inset:0;pointer-events:none}.brand{position:absolute;top:4%;left:4%;font:400 clamp(28px,3.5vw,53px) 'Cormorant Garamond',serif;line-height:.95;text-shadow:0 4px 19px #000a}.brand small{display:block;font:10px 'DM Sans',sans-serif;letter-spacing:.21em;color:#ccb18a;margin-top:12px;text-transform:uppercase}.hint{position:absolute;bottom:3%;left:50%;transform:translateX(-50%);background:#170e0bdc;padding:11px 20px;border:1px solid #b28b5755;max-width:90vw;min-width:340px;text-align:center;font-size:12px;color:#e9d3b5;letter-spacing:.07em}.rightnote{position:absolute;top:5%;right:4%;text-align:right;font-size:10px;letter-spacing:.15em;text-shadow:0 2px 10px #000;max-width:230px}
 .hand{position:fixed;z-index:40;pointer-events:none;left:50%;top:50%;width:clamp(66px,7vw,110px);transform:translate(-18%,-8%) rotate(-10deg);filter:drop-shadow(8px 10px 10px #000a);transition:transform .13s}.hand.reach{transform:translate(-20%,-9%) rotate(-17deg) scale(.87)}.hand svg{display:block;width:100%}.player-scene{position:absolute;z-index:16;inset:0;display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transform:translateY(30px) scale(.94);transition:opacity .8s,transform .8s}.game.playing-view .player-scene{opacity:1;pointer-events:auto;transform:translateY(0) scale(1)}.deck{width:min(90vw,1000px);height:min(66vh,610px);min-height:340px;position:relative;filter:drop-shadow(20px 36px 42px #000d)}.deckwood{position:absolute;inset:0;border:16px solid #1f1510;border-radius:16px;background:linear-gradient(145deg,#92714e,#4f3724 55%,#2b2018);box-shadow:inset 0 0 0 2px #e7bc8157;transform:perspective(1200px) rotateX(8deg)}.platter{position:absolute;left:5%;top:5%;height:88%;aspect-ratio:1;border:13px solid #403d39;background:#191718;border-radius:50%;box-shadow:7px 10px 16px #0007}.vinyl{position:absolute;inset:2%;border-radius:50%;background:repeating-radial-gradient(circle,#151415 0px 2px,#2d2b2d 2.5px 3.8px,#161516 4px 6px);box-shadow:inset 0 0 21px #000b}.vinyl.spinning{animation:spin 1.82s linear infinite}.label{position:absolute;inset:35%;background:#ba8c62;border:2px solid #1b1714;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;font:600 20px/.9 'Cormorant Garamond',serif;color:#1a120e;padding:4px}.label small{font:8px 'DM Sans',sans-serif;letter-spacing:.11em;margin-top:6px}.spindle{position:absolute;width:10px;height:10px;left:calc(50% - 5px);top:calc(50% - 5px);background:#e6d6c1;border-radius:50%}.tonearm-base{position:absolute;top:7%;right:8%;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#ecd7b4,#96816b 65%,#35271c)}.tonearm{position:absolute;top:calc(7% + 24px);right:calc(8% + 24px);width:11px;height:69%;border-radius:6px;transform-origin:top;transform:rotate(-33deg);transition:transform .8s;background:linear-gradient(90deg,#7d6855,#ebd9bc,#a28c6f);box-shadow:3px 4px 5px #0008}.tonearm.down{transform:rotate(-8deg)}.tonearm:after{content:'';position:absolute;bottom:0;left:-5px;height:32px;width:21px;background:#c4b49b;border-radius:3px;box-shadow:2px 4px 4px #0007}.controlpanel{position:absolute;right:3.5%;top:21%;width:27%;display:flex;flex-direction:column;align-items:stretch;gap:12px}.picked-title{font:400 clamp(24px,3vw,43px)/1 'Cormorant Garamond',serif;margin:0}.picked-by{font-size:12px;color:#e5c79e;margin:0}.disc-controls{display:flex;gap:10px;align-items:center;margin-top:8px}.metalbutton{width:51px;height:51px;border-radius:50%;background:radial-gradient(circle at 35% 24%,#f2e3cb,#aa9880 57%,#665443);border:3px solid #48382b;box-shadow:3px 6px 7px #120a09;color:#24160f;font-size:17px}.metalbutton:active{transform:translateY(3px)}.control-label{font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#e6c69d}.spotify{width:100%;height:152px;border:0;border-radius:10px;display:block;background:#171717}.spotify-note{font-size:10px;color:#dfbd99;line-height:1.4;margin:0}.back{position:absolute;z-index:3;top:4%;left:4%;background:#20140ee8;color:#eddbc4;border:1px solid #bf9764;padding:12px 16px;font-size:12px;letter-spacing:.08em}.back:hover{background:#4b3020}.fly{position:fixed;z-index:50;pointer-events:none;display:none;box-shadow:12px 20px 28px #0009;transition:top .8s cubic-bezier(.24,.8,.32,1),left .8s,width .8s,height .8s,transform .8s}.fly.flymove{transform:rotate(-15deg) scale(.78)}.fallback{position:absolute;z-index:12;right:4%;bottom:3%;font-size:10px;color:#bca181;text-shadow:0 2px 5px #000}.fallback a{text-decoration:underline;color:#f0ca95}.game.playing-view .fallback{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}@media (max-width:760px){.shelves{top:17%;width:96vw;height:48%;border-width:7px}.slot{padding:4% 8% 11%;border-right-width:5px;border-bottom-width:7px}.sleeve{padding:5px}.sleeve-top,.sleeve-foot{font-size:5px;letter-spacing:.04em}.sleeve-main{font-size:clamp(14px,3.3vw,27px)}.brand{top:3%;left:3%}.rightnote{display:none}.hint{min-width:0;width:90%;font-size:10px;bottom:6%;padding:10px}.turntable-mini{bottom:26%;width:58vw;height:26vw}.table{bottom:6%;height:24%}.deck{width:97vw;height:65vh;min-height:290px}.deckwood{border-width:8px}.platter{left:2%;top:11%;height:57%;border-width:6px}.tonearm-base{width:27px;height:27px;top:15%;right:12%}.tonearm{top:calc(15% + 12px);right:calc(12% + 11px);height:45%;width:6px}.tonearm:after{width:13px;height:22px}.controlpanel{width:91%;left:4.5%;right:4.5%;top:auto;bottom:4%;display:grid;grid-template-columns:1fr 1fr;gap:7px 15px}.picked-title{font-size:25px}.spotify{grid-column:1/-1;height:100px}.spotify-note{grid-column:1/-1;font-size:9px}.disc-controls{margin:0;justify-content:end}.metalbutton{width:36px;height:36px;font-size:13px}.control-label{font-size:8px}.back{top:2%;left:3%;font-size:10px;padding:8px}.fallback{display:none}.hand{width:75px}}@media(pointer:coarse){.hand{display:none}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-</style></head><body>
+.local-player{width:100%;padding:12px;background:#1d1614ad;border:1px solid #b7996a69;border-radius:9px}.import-label{display:inline-block;border:1px solid #d6bb93;color:#f0dbc1;padding:10px 13px;font-size:10px;letter-spacing:.1em;cursor:pointer}.import-label:hover{background:#60432f}.seekline{display:flex;gap:9px;align-items:center;margin-top:12px;color:#dcc4a5;font-size:10px}.seekline input{flex:1;min-width:10px;accent-color:#e1b97f}.clear-audio{font-size:10px;background:none;border:0;color:#ebca99;text-decoration:underline;padding:8px 0}.spotify-mount{max-height:165px;overflow:hidden}.local-player .spotify-note{margin:9px 0 0}.controlpanel{top:10%;gap:7px}.controlpanel .spotify{height:110px}.player-scene .hand{pointer-events:none}@media(max-width:760px){.controlpanel{top:auto;bottom:2%;gap:5px}.local-player{padding:7px}.import-label{padding:7px}.spotify-mount{max-height:110px}.controlpanel .spotify{height:90px}.deck{height:78vh}.platter{top:8%;height:48%}.picked-title{font-size:22px}}</style></head><body>
 <main class="game" id="game"><div class="room" id="room"><div class="wall"></div><div class="floor"></div><div class="shelves" id="shelves"><div class="slot"><button class="sleeve" type="button" data-record="0" data-track="0nJW01T7XtvILxQgC5J7Wh" aria-label="Pick up When I Was Your Man by Bruno Mars" style="--art:#694535;--arttext:#e7c8a3"><span class="sleeve-top">THE LISTENING ROOM <span>NO. 01</span></span><span class="sleeve-main"><strong>BRUNO</strong><em>MARS</em></span><span class="sleeve-foot">Bruno Mars</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="1" data-track="2bdVgAQgosGUJoViVDNeOV" aria-label="Pick up LIMBO by keshi" style="--art:#303d49;--arttext:#c9d7d4"><span class="sleeve-top">THE LISTENING ROOM <span>NO. 02</span></span><span class="sleeve-main"><strong>KESHI</strong><em>LIMBO</em></span><span class="sleeve-foot">keshi</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="2" data-track="6dOtVTDdiauQNBQEDOtlAB" aria-label="Pick up BIRDS OF A FEATHER by Billie Eilish" style="--art:#3c4561;--arttext:#e4d3bd"><span class="sleeve-top">THE LISTENING ROOM <span>NO. 03</span></span><span class="sleeve-main"><strong>BILLIE</strong><em>EILISH</em></span><span class="sleeve-foot">Billie Eilish</span></button></div>
@@ -16,19 +16,85 @@
 <div class="slot"><button class="sleeve" type="button" data-record="5" data-track="2aL4lMGhWdPpyPL6COPou7" aria-label="Pick up Soft Spot by keshi" style="--art:#5e534b;--arttext:#efdfd3"><span class="sleeve-top">THE LISTENING ROOM <span>NO. 06</span></span><span class="sleeve-main"><strong>SOFT</strong><em>SPOT</em></span><span class="sleeve-foot">keshi</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="6" data-track="2uIX8YMNjGMD7441kqyyNU" aria-label="Pick up ocean eyes by Billie Eilish" style="--art:#49544c;--arttext:#dcd9bb"><span class="sleeve-top">THE LISTENING ROOM <span>NO. 07</span></span><span class="sleeve-main"><strong>OCEAN</strong><em>EYES</em></span><span class="sleeve-foot">Billie Eilish</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="7" data-track="3bNv3VuUOKgrf5hu3YcuRo" aria-label="Pick up Someone Like You by Adele" style="--art:#574d45;--arttext:#e9d6c2"><span class="sleeve-top">THE LISTENING ROOM <span>NO. 08</span></span><span class="sleeve-main"><strong>SOMEONE</strong><em>LIKE YOU</em></span><span class="sleeve-foot">Adele</span></button></div></div><div class="table"></div><button class="turntable-mini" id="turntableMini" aria-label="Inspect turntable"><span class="mini-platter"></span><span class="mini-arm"></span></button></div><div class="ambient"></div><div class="grain"></div><div class="overlay"><div class="brand">after hours.<small>your private listening room · 01:14 am</small></div><div class="rightnote">THE RECORD WALL<br>REACH FOR A SLEEVE</div><div class="hint" id="hint">Move your hand to a record · Click to pick it up</div></div><div class="fallback">Music plays through <a target="_blank" rel="noopener" href="https://open.spotify.com">Spotify</a></div>
-<div class="player-scene" id="playerScene"><button class="back" id="back" type="button">← BACK TO THE RECORD WALL</button><div class="deck"><div class="deckwood"></div><div class="platter"><div class="vinyl" id="vinyl"><div class="label" id="label">AFTER<br>HOURS<small>33⅓ RPM</small></div><div class="spindle"></div></div></div><div class="tonearm-base"></div><div class="tonearm" id="tonearm"></div><div class="controlpanel"><h2 class="picked-title" id="song">Choose a record</h2><p class="picked-by" id="artist">at the record wall</p><div class="disc-controls"><button class="metalbutton" id="start" type="button" aria-label="Lower needle and show music player" title="Lower the needle">▶</button><button class="metalbutton" id="stop" type="button" aria-label="Stop and lift needle" title="Stop">■</button><span class="control-label" id="needleStatus">NEEDLE UP</span></div><div class="spotify-mount" id="spotifyMount" style="grid-column:1/-1"><p class="spotify-note">Select a record and lower the needle.</p></div><p class="spotify-note">Official Spotify player: press play inside the player if required. Free listeners may hear a preview.</p></div></div></div><div class="hand" id="hand" aria-hidden="true"><svg viewBox="0 0 92 132"><path d="M19 130 10 99Q2 86 11 71L20 50Q25 42 32 48L32 24Q32 11 42 12Q52 13 52 25L52 60 58 42Q63 28 73 35Q82 41 75 54L69 98 70 130Z" fill="#b38b6d" stroke="#4d3327" stroke-width="4"/><path d="M18 99Q38 108 53 99" fill="none" stroke="#855d46" stroke-width="3"/><path d="M15 114 70 110 77 132 22 132Z" fill="#f0e5d8" stroke="#6b5346" stroke-width="3"/><path d="M24 124 74 121 78 132 24 132Z" fill="#2a2d2c"/></svg></div><div class="fly" id="fly"></div></main>
+<div class="player-scene" id="playerScene"><button class="back" id="back" type="button">← BACK TO THE RECORD WALL</button><div class="deck"><div class="deckwood"></div><div class="platter"><div class="vinyl" id="vinyl"><div class="label" id="label">AFTER<br>HOURS<small>33⅓ RPM</small></div><div class="spindle"></div></div></div><div class="tonearm-base"></div><div class="tonearm" id="tonearm"></div><div class="controlpanel"><h2 class="picked-title" id="song">Choose a record</h2><p class="picked-by" id="artist">at the record wall</p><div class="disc-controls"><button class="metalbutton" id="start" type="button" aria-label="Lower needle and show music player" title="Lower the needle">▶</button><button class="metalbutton" id="stop" type="button" aria-label="Stop and lift needle" title="Stop">■</button><span class="control-label" id="needleStatus">NEEDLE UP</span></div><div class="local-player" id="localPlayer" style="grid-column:1/-1"><label class="import-label" for="audioFile">＋ ADD YOUR AUDIO FILE</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/mp4,audio/*" hidden><p class="spotify-note" id="localStatus">Add an MP3 or other audio file you are permitted to use. Then press the physical PLAY button.</p><div class="seekline"><span id="elapsed">0:00</span><input type="range" id="localSeek" value="0" min="0" max="1000" step="1" aria-label="Song position" disabled><span id="duration">0:00</span></div><button class="clear-audio" id="clearAudio" type="button" hidden>REMOVE IMPORTED AUDIO</button></div><div class="spotify-mount" id="spotifyMount" style="grid-column:1/-1"><p class="spotify-note">Or listen using Spotify’s official embedded player (preview/account restrictions apply).</p></div><p class="spotify-note">Songs are not bundled. Your own audio remains on this device; this site does not upload it.</p></div></div></div><div class="hand" id="hand" aria-hidden="true"><svg viewBox="0 0 92 132"><path d="M19 130 10 99Q2 86 11 71L20 50Q25 42 32 48L32 24Q32 11 42 12Q52 13 52 25L52 60 58 42Q63 28 73 35Q82 41 75 54L69 98 70 130Z" fill="#b38b6d" stroke="#4d3327" stroke-width="4"/><path d="M18 99Q38 108 53 99" fill="none" stroke="#855d46" stroke-width="3"/><path d="M15 114 70 110 77 132 22 132Z" fill="#f0e5d8" stroke="#6b5346" stroke-width="3"/><path d="M24 124 74 121 78 132 24 132Z" fill="#2a2d2c"/></svg></div><div class="fly" id="fly"></div></main>
 <script>
 'use strict';
 const tracks=[{"artist":"Bruno Mars","song":"When I Was Your Man","id":"0nJW01T7XtvILxQgC5J7Wh","color":"#694535","ink":"#e7c8a3"},{"artist":"keshi","song":"LIMBO","id":"2bdVgAQgosGUJoViVDNeOV","color":"#303d49","ink":"#c9d7d4"},{"artist":"Billie Eilish","song":"BIRDS OF A FEATHER","id":"6dOtVTDdiauQNBQEDOtlAB","color":"#3c4561","ink":"#e4d3bd"},{"artist":"Adele","song":"Easy On Me","id":"0gplL1WMoJ6iYaPgMCL0gX","color":"#705047","ink":"#e8cdbb"},{"artist":"Lady Gaga, Bruno Mars","song":"Die With A Smile","id":"2plbrEY59IikOBgBGLjaoe","color":"#644b3e","ink":"#eadabf"},{"artist":"keshi","song":"Soft Spot","id":"2aL4lMGhWdPpyPL6COPou7","color":"#5e534b","ink":"#efdfd3"},{"artist":"Billie Eilish","song":"ocean eyes","id":"2uIX8YMNjGMD7441kqyyNU","color":"#49544c","ink":"#dcd9bb"},{"artist":"Adele","song":"Someone Like You","id":"3bNv3VuUOKgrf5hu3YcuRo","color":"#574d45","ink":"#e9d6c2"}];
 const byId=id=>document.getElementById(id);
 let chosen=-1, needleDown=false, currentIframe=null, moving=false;
+const ownedAudio = new Audio();
+ownedAudio.preload='metadata';
+let localUrls = Object.create(null);
+let localFiles = Object.create(null);
+let ownedKey = null;
+let localPlaying = false;
+const audioDb = new Promise(resolve => {
+  if(!('indexedDB' in window)){resolve(null);return;}
+  const open=indexedDB.open('afterhours-audio-v1',1);
+  open.onupgradeneeded=()=>open.result.createObjectStore('files');
+  open.onsuccess=()=>resolve(open.result);
+  open.onerror=()=>resolve(null);
+});
+async function readStored(index){
+ const db=await audioDb;if(!db)return null;
+ return new Promise(resolve=>{const tx=db.transaction('files','readonly'),req=tx.objectStore('files').get(String(index));req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>resolve(null);});
+}
+async function saveStored(index,file){
+ const db=await audioDb;if(!db)return false;
+ return new Promise(resolve=>{const tx=db.transaction('files','readwrite');tx.objectStore('files').put(file,String(index));tx.oncomplete=()=>resolve(true);tx.onerror=()=>resolve(false);tx.onabort=()=>resolve(false);});
+}
+async function removeStored(index){
+ const db=await audioDb;if(!db)return;
+ return new Promise(resolve=>{const tx=db.transaction('files','readwrite');tx.objectStore('files').delete(String(index));tx.oncomplete=()=>resolve();tx.onerror=()=>resolve();});
+}
+function prettyTime(value){if(!Number.isFinite(value))return '0:00';return Math.floor(value/60)+':'+String(Math.floor(value%60)).padStart(2,'0')}
+function updateProgress(){
+ byId('elapsed').textContent=prettyTime(ownedAudio.currentTime);
+ byId('duration').textContent=prettyTime(ownedAudio.duration);
+ byId('localSeek').value=ownedAudio.duration?String(Math.round(ownedAudio.currentTime/ownedAudio.duration*1000)):'0';
+ byId('localSeek').disabled=!Number.isFinite(ownedAudio.duration)||ownedAudio.duration<=0;
+}
+function stopOwned(reset=true){
+ ownedAudio.pause();localPlaying=false;
+ if(reset){try{ownedAudio.currentTime=0}catch(e){}}
+ updateProgress();
+}
+function updateVinylState(on){
+ needleDown=on;
+ byId('vinyl').classList.toggle('spinning',on);
+ byId('tonearm').classList.toggle('down',on);
+ byId('needleStatus').textContent=on?'NEEDLE DOWN':'NEEDLE UP';
+}
+async function prepareLocal(index){
+ ownedKey=index;stopOwned();ownedAudio.removeAttribute('src');ownedAudio.load();
+ const stored=localFiles[index]||await readStored(index);
+ if(ownedKey!==index)return;
+ if(stored){
+  localFiles[index]=stored;
+  if(localUrls[index])URL.revokeObjectURL(localUrls[index]);
+  localUrls[index]=URL.createObjectURL(stored);
+  ownedAudio.src=localUrls[index];ownedAudio.load();
+  byId('localStatus').textContent='Ready: '+stored.name+' · Press ▶ on the turntable';
+  byId('clearAudio').hidden=false;
+ }else{
+  byId('localStatus').textContent='Import a file you have rights to play for direct turntable controls.';
+  byId('clearAudio').hidden=true;
+ }
+ updateProgress();
+}
+ownedAudio.addEventListener('timeupdate',updateProgress);
+ownedAudio.addEventListener('loadedmetadata',updateProgress);
+ownedAudio.addEventListener('ended',()=>{localPlaying=false;updateVinylState(false);setHint('The record has finished. Press ▶ to replay.');});
+ownedAudio.addEventListener('pause',()=>{localPlaying=false;});
+ownedAudio.addEventListener('error',()=>{byId('localStatus').textContent='This audio file could not be played. Try MP3, WAV or another supported format.';updateVinylState(false);});
+
 const game=byId('game'), hint=byId('hint'), hand=byId('hand');
 function setHint(text){hint.textContent=text;}
 function lift(){needleDown=false;byId('vinyl').classList.remove('spinning');byId('tonearm').classList.remove('down');byId('needleStatus').textContent='NEEDLE UP';}
 function place(index, button){
  if(moving)return;
  moving=true;
- const data=tracks[index];chosen=index;lift();byId('spotifyMount').replaceChildren();currentIframe=null;
+ const data=tracks[index];chosen=index;lift();stopOwned();byId('spotifyMount').replaceChildren();currentIframe=null;prepareLocal(index);
  const rect=button.getBoundingClientRect(),fly=byId('fly');
  fly.style.cssText='display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,'+data.color+',#17110e);color:'+data.ink+';left:'+rect.left+'px;top:'+rect.top+'px;width:'+rect.width+'px;height:'+rect.height+'px;';
  fly.textContent=data.artist;fly.classList.remove('flymove');
@@ -36,20 +102,42 @@ function place(index, button){
  requestAnimationFrame(()=>requestAnimationFrame(()=>{fly.classList.add('flymove');fly.style.left=(innerWidth*.50-60)+'px';fly.style.top=(innerHeight*.66-40)+'px';fly.style.width='120px';fly.style.height='120px';}));
  setTimeout(()=>{fly.style.display='none';fly.classList.remove('flymove');moving=false;game.classList.add('playing-view');byId('song').textContent=data.song;byId('artist').textContent=data.artist;byId('label').style.background=data.color;byId('label').style.color=data.ink;byId('label').innerHTML='<span>'+data.artist.replace(/&/g,'&amp;')+'</span><small>33⅓ RPM</small>';setHint('Lower the needle · Listen with the official Spotify player');},840);
 }
-function lower(){
+async function lower(){
  if(chosen<0){setHint('Pick an album from the wall first.');return;}
+ if(ownedAudio.src && ownedAudio.getAttribute('src')){
+  try{await ownedAudio.play();localPlaying=true;updateVinylState(true);setHint('Now playing your imported audio · Press ■ to stop');}
+  catch(e){updateVinylState(false);setHint('Unable to play audio. Try importing a supported file again.');}
+  return;
+ }
  if(needleDown)return;
- needleDown=true;byId('tonearm').classList.add('down');byId('vinyl').classList.add('spinning');byId('needleStatus').textContent='NEEDLE DOWN';
- if(!currentIframe){const iframe=document.createElement('iframe');iframe.className='spotify';iframe.title=tracks[chosen].song+' — Spotify player';iframe.src='https://open.spotify.com/embed/track/'+tracks[chosen].id+'?utm_source=generator';iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';iframe.loading='eager';iframe.referrerPolicy='strict-origin-when-cross-origin';byId('spotifyMount').replaceChildren(iframe);currentIframe=iframe;}
- setHint('Use play in the Spotify player to listen to the real song');
+ updateVinylState(true);
+ if(!currentIframe){const iframe=document.createElement('iframe');iframe.className='spotify';iframe.title=tracks[chosen].song+' — Spotify player';iframe.src='https://open.spotify.com/embed/track/'+tracks[chosen].id;iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';iframe.loading='eager';iframe.referrerPolicy='strict-origin-when-cross-origin';byId('spotifyMount').replaceChildren(iframe);currentIframe=iframe;}
+ setHint('Use Play in Spotify · Streaming cannot be controlled directly by this turntable.');
 }
 function stop(){
- lift();
- // Remove the embed to halt playback rather than pretending to control Spotify across iframe boundaries.
+ stopOwned();updateVinylState(false);
  byId('spotifyMount').replaceChildren();
  currentIframe=null;
- setHint('Record stopped · Press ▶ to lower the needle again');
+ setHint('Record stopped · Press ▶ to play again');
 }
+byId('audioFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file||chosen<0)return;
+ if(!(file.type.startsWith('audio/')||/\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(file.name))){setHint('Please select an audio file.');return;}
+ const index=chosen;stop();localFiles[index]=file;
+ const saved=await saveStored(index,file);
+ if(chosen===index)await prepareLocal(index);
+ setHint(saved?'Audio saved privately in this browser. Press ▶ to play.':'Audio loaded for this session. Press ▶ to play.');
+ event.target.value='';
+});
+byId('clearAudio').addEventListener('click',async()=>{
+ if(chosen<0)return;const index=chosen;stop();delete localFiles[index];
+ if(localUrls[index]){URL.revokeObjectURL(localUrls[index]);delete localUrls[index];}
+ await removeStored(index);if(chosen===index)await prepareLocal(index);
+ setHint('Imported audio removed from this browser.');
+});
+byId('localSeek').addEventListener('input',event=>{
+ if(Number.isFinite(ownedAudio.duration)&&ownedAudio.duration>0)ownedAudio.currentTime=ownedAudio.duration*Number(event.target.value)/1000;
+});
 byId('shelves').addEventListener('click',event=>{const el=event.target.closest('[data-record]');if(el)place(Number(el.dataset.record),el);});
 byId('back').addEventListener('click',()=>{stop();game.classList.remove('playing-view');setHint('Pick another record from the wall');});
 byId('turntableMini').addEventListener('click',()=>{if(chosen<0)setHint('Choose a record from the wall first');else game.classList.add('playing-view');});
