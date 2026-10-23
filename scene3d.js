@@ -572,9 +572,16 @@ cv.addEventListener('webglcontextlost',event=>{
  document.documentElement.classList.remove('three-ready');
  document.getElementById('hint').textContent='3D graphics paused. Reload the page to restore the listening room.';
 });
+// Only reset the pickup when actually leaving the turntable. Audio readiness
+// and other UI classes must never cancel a record as it slides from the sleeve.
+let previousPlayingView=game.classList.contains('playing-view');
 const observer=new MutationObserver(()=>{
- targetMode=game.classList.contains('playing-view')?'deck':'wall';
- if(targetMode==='wall'){picked=-1;keyboardIndex=-1;resetSleeves();}else updateAlbumHover(-1);
+ const playingView=game.classList.contains('playing-view');
+ if(playingView===previousPlayingView)return;
+ previousPlayingView=playingView;
+ targetMode=playingView?'deck':'wall';
+ if(!playingView){picked=-1;keyboardIndex=-1;resetSleeves();recordPlacement=0;}
+ else updateAlbumHover(-1);
 });observer.observe(game,{attributes:true,attributeFilter:['class']});
 const dragRoot=cv;
 let grabStart=null;
