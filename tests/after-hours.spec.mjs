@@ -146,3 +146,20 @@ test.describe('Safe-space onboarding and physical exit', () => {
   await expect(page.locator('#game')).not.toHaveClass(/playing-view/,{timeout:4000});
  });
 });
+
+
+test('commercial-song player makes Spotify dependency explicit',async({page})=>{
+ test.setTimeout(90000);
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await page.locator('.sleeve').nth(2).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7000});
+ await expect(page.locator('#playbackExplainer')).toContainText('Spotify is required');
+ await expect(page.locator('#spotifyOpen')).toBeVisible();
+ await expect(page.locator('#jazzQuickPlay')).toBeVisible();
+ await page.locator('#start').evaluate(el=>el.click());
+ await expect(page.locator('#sourceDrawer')).toHaveAttribute('open','');
+ await expect(page.locator('#spotifyMount iframe.spotify')).toHaveAttribute('src',/open.spotify.com\/embed\/track\/6dOtVTDdiauQNBQEDOtlAB/);
+ await expect(page.locator('#vinyl')).not.toHaveClass(/spinning/);
+ await expect(page.locator('#playbackExplainer')).toContainText('Press Play inside Spotify');
+});
