@@ -57,6 +57,39 @@ const globe=new THREE.Mesh(new THREE.SphereGeometry(.29,24,14),new THREE.MeshSta
 globe.position.set(7.18,1.22,-2.3);scene.add(globe);
 const globeLight=new THREE.PointLight(0xffbf7c,9,6);globeLight.position.copy(globe.position);scene.add(globeLight);
 
+
+/* Jazz-kissa-inspired restrained architectural dressing */
+const naturalWall=m('#493329',.97);
+const shoji=m('#d9c1a0',.96);
+const slatWood=m('#33241a',.85);
+for(const sideX of [-9.3,9.3]){
+ block(3.0,4.65,.13,naturalWall,sideX,2.31,-3.20,false);
+ const paper=new THREE.Mesh(new THREE.PlaneGeometry(2.63,3.92),
+  new THREE.MeshStandardMaterial({color:0xcbb8a0,roughness:1,transparent:true,opacity:.56,side:THREE.DoubleSide}));
+ paper.position.set(sideX,2.26,-3.105);scene.add(paper);
+ for(let j=0;j<5;j++)block(2.65,.042,.035,slatWood,sideX,.47+j*.89,-3.065,false);
+ for(let j=-1;j<=1;j++)block(.036,3.96,.035,slatWood,sideX+j*.86,2.26,-3.06,false);
+}
+const hangingFixture=new THREE.Group();scene.add(hangingFixture);
+const wire=new THREE.Mesh(new THREE.CylinderGeometry(.011,.011,.95,10),slatWood);
+wire.position.set(0,5.57,1.25);hangingFixture.add(wire);
+const lantern=new THREE.Mesh(new THREE.CylinderGeometry(.38,.27,.55,28,1),m('#c09b6d',.84));
+lantern.position.set(0,4.86,1.25);hangingFixture.add(lantern);
+const lanternPoint=new THREE.PointLight(0xffb879,10,9,2);
+lanternPoint.position.set(0,4.62,1.27);scene.add(lanternPoint);
+const atmosphereLight=new THREE.PointLight(0xffc48a,0,7,2);
+atmosphereLight.position.set(0,1.9,.4);scene.add(atmosphereLight);
+const livingMat=m('#47604a',.93);
+const plantBase=cylinder(.29,.5,m('#78543a'),6.8,.33,-2.65);
+const plantLeaves=new THREE.Group();plantLeaves.position.set(6.8,.95,-2.65);scene.add(plantLeaves);
+for(let i=0;i<9;i++){
+ const angle=i*Math.PI*2/9;
+ const leaf=new THREE.Mesh(new THREE.SphereGeometry(.15,10,8),livingMat);
+ leaf.scale.set(.42,2.25,.58);
+ leaf.position.set(Math.sin(angle)*.27,(i%3)*.08,Math.cos(angle)*.23);
+ leaf.rotation.z=Math.sin(angle)*.43;plantLeaves.add(leaf);
+}
+
 // The foreground cabinet and turntable are physical world objects, not HTML illustrations.
 block(5.4,.84,2.35,wood,0,.23,2.4);
 const tableTop=block(5.55,.13,2.48,shelfMat,0,.73,2.4);
@@ -488,6 +521,12 @@ function animate(){
  recordGroup.scale.setScalar(.89+landing*.11);
  // Spin the record only while local playback/needle state is active.
  const playing=document.getElementById('vinyl').classList.contains('spinning');
+ // Playback-driven ambience: no artificial claim of waveform analysis.
+ const glowGoal=playing?5.5:0;
+ atmosphereLight.intensity=THREE.MathUtils.damp(atmosphereLight.intensity,glowGoal,1.6,dt);
+ const softPulse=playing?.22*Math.sin(clock.elapsedTime*1.4):0;
+ lanternPoint.intensity=THREE.MathUtils.damp(lanternPoint.intensity,playing?13:10,1.5,dt)+softPulse*dt;
+ shelfGlowMaterial.opacity=THREE.MathUtils.damp(shelfGlowMaterial.opacity,playing?.39:.26,1.7,dt);
  motorSpeed=THREE.MathUtils.damp(motorSpeed,playing?Math.PI*1.1:0,playing?2.5:4.5,dt);
  recordGroup.rotation.y-=motorSpeed*dt;
  const needleDown=document.getElementById('tonearm').classList.contains('down');
