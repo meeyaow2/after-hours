@@ -381,8 +381,7 @@ function animatePickup(dt){
    scale:travelRecord.scale.x
   };
   pickupState.active=false;pickupState.stage='held';
-  item.position.copy(item.userData.home);
-  item.rotation.set(0,-.05,0);item.scale.setScalar(1);item.renderOrder=0;
+  // Keep the sleeve where it was held. It eases back as the disc travels away.
   setPickupStage('Placing the record');
  }
 }
@@ -603,12 +602,20 @@ function animate(){
   const from=pickupState.extractionPose;
   const t=smooth01(recordPlacement/.96);
   travelRecord.position.lerpVectors(from.position,landingPosition,t);
+  if(selectedSleeve){
+   const retreat=smooth01(t/.75);
+   selectedSleeve.position.lerpVectors(pickupFront,selectedSleeve.userData.home,retreat);
+   selectedSleeve.rotation.y=THREE.MathUtils.lerp(.08,-.05,retreat);
+   selectedSleeve.rotation.x=THREE.MathUtils.lerp(-.07,0,retreat);
+   selectedSleeve.scale.setScalar(THREE.MathUtils.lerp(1.12,1,retreat));
+  }
   travelRecord.quaternion.copy(from.quaternion).slerp(new THREE.Quaternion(),t);
   travelRecord.scale.setScalar(THREE.MathUtils.lerp(from.scale,1,t));
   travelRecord.visible=t<.999;
   if(t>=.999){
    travelRecord.visible=false;
    pickupState.stage='placed';pickupState.extractionPose=null;
+   if(selectedSleeve){selectedSleeve.position.copy(selectedSleeve.userData.home);selectedSleeve.rotation.set(0,-.05,0);selectedSleeve.scale.setScalar(1);selectedSleeve.renderOrder=0;selectedSleeve=null;}
    setPickupStage('');
   }
  }
