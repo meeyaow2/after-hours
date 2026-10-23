@@ -94,7 +94,7 @@ for (const width of [390,1440]) {
   await page.locator('#audioFile').setInputFiles({
    name:'qa-sine.wav',mimeType:'audio/wav',buffer:wavTone()
   });
-  await expect(page.locator('#localStatus')).toContainText(/Audio (saved|loaded)/,{timeout:7000});
+  await expect(page.locator('#localStatus')).toContainText('Ready: qa-sine.wav',{timeout:7000});
   await page.locator('#start').evaluate(el=>el.click());
   await expect(page.locator('#vinyl')).toHaveClass(/spinning/,{timeout:4000});
   await page.locator('#stop').evaluate(el=>el.click());
