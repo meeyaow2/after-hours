@@ -404,6 +404,7 @@ let sourceMode='none';const freeJazz=[{name:'Long Stroll',url:'https://incompete
 const ownedAudio = new Audio();
 ownedAudio.preload='metadata';
 ownedAudio.volume=.65;
+const bundledAudio = {6:'./assets/audio/ocean-eyes.mp3'};
 let localUrls = Object.create(null);
 let localFiles = Object.create(null);
 let ownedKey = null;
@@ -477,10 +478,26 @@ async function prepareLocal(index,{autoPlay=false}={}){
    }catch{if(chosen===index)setHint('Song ready — press ▶ to play it');}
   }
  }else{
-  sourceMode='none';
-  byId('localStatus').textContent='Import a file you have permission to play for direct turntable controls.';
-  byId('clearAudio').hidden=true;
-  syncLocalAudioUI(index,false);
+  // A repository-hosted recording can play directly once its file is present.
+  // Check for the asset first: a missing file must not falsely show as playable.
+  const bundled=bundledAudio[index];
+  let available=false;
+  if(bundled){
+   try{const response=await fetch(bundled,{method:'HEAD',cache:'no-store'});available=response.ok;}catch{}
+  }
+  if(ownedKey!==index||chosen!==index)return;
+  if(available){
+   sourceMode='local';
+   ownedAudio.src=bundled;ownedAudio.load();
+   byId('localStatus').textContent='Ready: '+tracks[index].song+' · Click the record or press ▶';
+   byId('clearAudio').hidden=true;
+   syncLocalAudioUI(index,true);
+  }else{
+   sourceMode='none';
+   byId('localStatus').textContent='Import an audio file you have permission to play for direct turntable controls.';
+   byId('clearAudio').hidden=true;
+   syncLocalAudioUI(index,false);
+  }
  }
  updateProgress();
 }
