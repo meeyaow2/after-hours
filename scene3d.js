@@ -105,7 +105,7 @@ const clock=new THREE.Clock();
    This deliberately avoids camera-plane occlusion, culling and material-opacity issues. */
 const handImage=document.createElement('img');
 handImage.id='firstPersonHand';
-handImage.src='./assets/hand/hand-real.webp?v=hand-dom-17';
+handImage.src='./assets/hand/hand-real.webp?v=hand-clean-18';
 handImage.alt='';
 handImage.setAttribute('aria-hidden','true');
 handImage.draggable=false;
