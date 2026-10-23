@@ -6,7 +6,7 @@ First-person-inspired 3D vinyl listening room built using Three.js and static HT
 
 ## Record collection
 
-Eleven commercial song selections:
+Twelve commercial song selections:
 - Bruno Mars — When I Was Your Man
 - keshi — LIMBO
 - Billie Eilish — BIRDS OF A FEATHER
@@ -18,6 +18,7 @@ Eleven commercial song selections:
 - No Guidnce — Is It A Crime?
 - OSA — Test Of Time (Spotify's *Quarter Life Crisis* album player)
 - GIVĒON — Heartbreak Anniversary
+- Joji — SLOW DANCING IN THE DARK
 
 Commercial songs **are not hosted as MP3s in this repository**. Spotify embeds may play previews or require Spotify sign-in or app playback, and cannot be reliably started or controlled through a separate third-party play button.
 
@@ -51,4 +52,4 @@ Choose **+ ADD YOUR AUDIO FILE** to import an MP3/WAV/M4A you have the rights to
 
 ## Caveats
 
-The 3D models are procedurally modeled and not photorealistic scans. External album-cover images may not load on every host. The code passes JavaScript syntax checks, but full browser playback validation on every device remains outstanding.
+The 3D models are procedurally modeled and not photorealistic scans. Album covers are recovered from Apple Music's song catalog where available, with text fallbacks when image services fail. The code passes JavaScript syntax checks, but full browser playback validation on every device remains outstanding.
