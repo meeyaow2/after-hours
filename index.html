@@ -321,6 +321,16 @@
  .three-ready .mobile-collection{top:105px}
 }
 @media(prefers-reduced-motion:reduce){.sanctuary-note{transition:none}}
+
+.playback-explainer{margin:0;color:#dfc7a5;font:12px/1.55 'DM Sans',sans-serif}
+.playback-choices{display:flex;flex-direction:column;gap:7px}
+.listen-action{width:100%;border-radius:8px;border:1px solid #d2b082;background:#d8bd94;color:#201711;text-align:center;padding:10px 12px;min-height:43px;font:600 12px 'DM Sans',sans-serif}
+.listen-action.secondary{border-color:#b2916b;background:#2d211b;color:#f0d9b7}
+.listen-action:hover{filter:brightness(1.09)}
+.listen-action:focus-visible{outline:2px solid #fff0cf;outline-offset:2px}
+.spotify-mount:empty{display:none}
+.three-ready .player-scene .controlpanel{max-height:min(86vh,770px)}
+@media(max-width:700px){.playback-choices{flex-direction:row}.listen-action{flex:1;font-size:11px;padding:9px 6px}.three-ready .player-scene .controlpanel{max-height:59dvh}}
 </style></head><body>
 <main class="game" id="game"><section class="mobile-collection" id="mobileCollection" aria-label="Choose a record"><div class="mobile-intro"><span>THE COLLECTION</span><p>A little space to escape the noise. Pick a record and stay a while.</p></div><div class="mobile-record-grid" id="mobileRecordGrid"></div></section><div class="room" id="room"><div class="wall"></div><div class="floor"></div><div class="shelves" id="shelves"><div class="slot"><button class="sleeve" type="button" data-record="0" data-track="0nJW01T7XtvILxQgC5J7Wh" aria-label="Pick up When I Was Your Man by Bruno Mars" style="--art:#694535;--arttext:#e7c8a3"><img class="cover-image" src="https://iscale.iheart.com/catalog/album/20634084" alt="Unorthodox Jukebox — Bruno Mars original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Unorthodox Jukebox — Bruno Mars</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="1" data-track="2bdVgAQgosGUJoViVDNeOV" aria-label="Pick up LIMBO by keshi" style="--art:#303d49;--arttext:#c9d7d4"><img class="cover-image" src="https://coverartarchive.org/release/43665699-1d57-4963-82dd-27189b4509d7/front-500" alt="GABRIEL — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">GABRIEL — keshi</span></button></div>
@@ -330,7 +340,7 @@
 <div class="slot"><button class="sleeve" type="button" data-record="5" data-track="2aL4lMGhWdPpyPL6COPou7" aria-label="Pick up Soft Spot by keshi" style="--art:#5e534b;--arttext:#efdfd3"><img class="cover-image" src="https://coverartarchive.org/release/06e6a302-7f89-4a0b-91e1-6face66a9c75/front-500" alt="Requiem — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Requiem — keshi</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="6" data-track="2uIX8YMNjGMD7441kqyyNU" aria-label="Pick up ocean eyes by Billie Eilish" style="--art:#49544c;--arttext:#dcd9bb"><img class="cover-image" src="https://cdn.coveratlas.com/image/thumb/Music115/v4/02/1d/30/021d3036-5503-3ed3-df00-882f2833a6ae/17UM1IM17026.rgb.jpg/5400x5400bb.jpg" alt="dont smile at me — Billie Eilish original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">dont smile at me — Billie Eilish</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="7" data-track="3bNv3VuUOKgrf5hu3YcuRo" aria-label="Pick up Someone Like You by Adele" style="--art:#574d45;--arttext:#e9d6c2"><img class="cover-image" src="https://media.snl.no/media/27547/standard_484_ADELE.jpg" alt="21 — Adele original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">21 — Adele</span></button></div><div class="slot"><button class="sleeve" type="button" data-record="8" aria-label="Pick up Is It A Crime? by No Guidnce" style="--art:#593a31;--arttext:#f3dec4"><img class="cover-image" alt="No Guidnce — Is It A Crime? EP official cover art" loading="eager" decoding="async" style="display:none"><span class="cover-fallback"><span class="special-art"><strong>IS IT A</strong><em>CRIME?</em><small>NO GUIDNCE</small></span></span></button></div><div class="slot"><button class="sleeve" type="button" data-record="9" aria-label="Pick up Test Of Time by OSA" style="--art:#4f584e;--arttext:#f3ddbd"><img class="cover-image" alt="OSA — Quarter Life Crisis official cover art" loading="eager" decoding="async" style="display:none"><span class="cover-fallback"><span class="special-art"><strong>TEST OF</strong><em>TIME</em><small>OSA</small></span></span></button></div><div class="slot"><button class="sleeve" type="button" data-record="10" data-track="2QfznFotJNZmnIEYFdzE5T" aria-label="Pick up Heartbreak Anniversary by GIVĒON" style="--art:#555049;--arttext:#efe0c7"><img class="cover-image" src="https://coverartarchive.org/release/2dfb4587-2156-4734-97d2-3c3cb7f67a13/front-500" alt="GIVĒON Heartbreak Anniversary official single artwork" loading="eager" decoding="async" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true"><span class="special-art"><strong>HEARTBREAK</strong><em>ANNIVERSARY</em><small>GIVĒON · TAKE TIME</small></span></span></button></div><div class="slot"><button class="sleeve" type="button" data-record="11" data-track="0rKtyWc8bvkriBthvHKY8d" aria-label="Pick up SLOW DANCING IN THE DARK by Joji" style="--art:#493a38;--arttext:#f1e2d5"><img class="cover-image" src="https://coverartarchive.org/release/c85fd146-7b3d-447b-9bdb-37c2a74c0513/front-500" alt="Joji SLOW DANCING IN THE DARK original single artwork" loading="eager" decoding="async"><span class="cover-fallback" aria-hidden="true"><span class="special-art"><strong>SLOW DANCING</strong><em>IN THE DARK</em><small>JOJI</small></span></span></button></div></div><div class="table"></div><button class="turntable-mini" id="turntableMini" aria-label="Inspect turntable"><span class="mini-platter"></span><span class="mini-arm"></span></button></div><div class="ambient"></div><div class="grain"></div><div class="overlay"><div class="brand">after hours.<small>a little space to escape the noise</small></div><div class="rightnote">NO RUSH. NO PRESSURE.<br>JUST YOUR MUSIC.</div><div class="hint" id="hint">Move your hand to a record · Click to pick it up</div></div><aside class="sanctuary-note" id="sanctuaryNote" aria-label="Welcome to After Hours"><div class="sanctuary-eyebrow">WELCOME TO AFTER HOURS</div><p>Some days, you just need a little room to yourself.</p><span>Pick a record. Stay a while. The world can wait.</span><button type="button" id="dismissWelcome" aria-label="Dismiss welcome message">Got it <span aria-hidden="true">↗</span></button></aside><button class="quiet-switch" type="button" id="quietSwitch" aria-pressed="false" title="Hide extra on-screen prompts"><span aria-hidden="true">☾</span> Quiet Mode</button><div class="fallback">Music plays through <a target="_blank" rel="noopener" href="https://open.spotify.com">Spotify</a></div>
-<div class="player-scene" id="playerScene"><div class="deck"><div class="deckwood"></div><div class="platter"><div class="platter-specular"></div><div class="vinyl" id="vinyl"><div class="label" id="label">AFTER<br>HOURS<small>33⅓ RPM</small></div><div class="spindle"></div></div></div><div class="tonearm-base"><div class="pivot-pin"></div></div><div class="tonearm" id="tonearm"><div class="cartridge"></div></div><div class="controlpanel"><h2 class="picked-title" id="song">Choose a record</h2><p class="picked-by" id="artist">at the record wall</p><div class="disc-controls"><button class="metalbutton" id="start" type="button" aria-label="Lower needle and show music player" title="Lower the needle">▶</button><button class="metalbutton" id="stop" type="button" aria-label="Stop and lift needle" title="Stop">■</button><span class="control-label" id="needleStatus" role="status" aria-live="polite">NEEDLE UP</span></div><div class="seekline"><span id="elapsed">0:00</span><input type="range" id="localSeek" value="0" min="0" max="1000" step="1" aria-label="Song position" disabled><span id="duration">0:00</span></div><div class="master-volume" style="grid-column:1/-1"><div class="volume-head"><span>VOLUME</span><output id="volumeValue" for="masterVolume">65%</output></div><div class="volume-row"><button type="button" id="muteVolume" aria-label="Mute audio" title="Mute audio">◖))</button><input id="masterVolume" type="range" min="0" max="100" value="65" step="1" aria-label="Turntable audio volume"></div><p>Volume controls imported music and Jazz Radio. Spotify has separate controls.</p></div><details class="source-drawer" id="sourceDrawer"><summary><span>LISTENING OPTIONS</span><span class="drawer-summary">Spotify · Jazz · Your files</span></summary><div class="source-content"><div class="radio-player" id="radioPlayer" style="grid-column:1/-1"><div class="radio-top"><span>JAZZ RADIO · DIRECT PLAY</span><span id="radioState">READY</span></div><select id="radioTrack" aria-label="Select Creative Commons jazz"><option value="0">Lobby Time — Kevin MacLeod</option><option value="1">Airport Lounge — Kevin MacLeod</option></select><button id="radioPlay" type="button">▶ PLAY JAZZ</button><p class="radio-credit">“Lobby Time” and “Airport Lounge” by Kevin MacLeod (incompetech.com), licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Jazz Radio is separate from the commercial album selected.</p></div><div class="local-player" id="localPlayer" style="grid-column:1/-1"><label class="import-label" for="audioFile">＋ ADD YOUR AUDIO FILE</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/mp4,audio/*" hidden><p class="spotify-note" id="localStatus">Add an MP3 or other audio file you are permitted to use. Then press the physical PLAY button.</p><button class="clear-audio" id="clearAudio" type="button" hidden>REMOVE IMPORTED AUDIO</button></div><div class="spotify-mount" id="spotifyMount" style="grid-column:1/-1"><p class="spotify-note">Or listen using Spotify’s official embedded player (preview/account restrictions apply).</p></div><p class="spotify-note source-disclaimer">Commercial songs use official Spotify embeds; full streaming depends on Spotify access. Your own audio stays on this device.</p></div></details><div class="player-cue"><span aria-hidden="true">↖</span> Click outside the turntable to return to the record wall · Esc to exit</div></div></div></div><div class="hand" id="hand" aria-hidden="true"><svg viewBox="0 0 126 190" xmlns="http://www.w3.org/2000/svg">
+<div class="player-scene" id="playerScene"><div class="deck"><div class="deckwood"></div><div class="platter"><div class="platter-specular"></div><div class="vinyl" id="vinyl"><div class="label" id="label">AFTER<br>HOURS<small>33⅓ RPM</small></div><div class="spindle"></div></div></div><div class="tonearm-base"><div class="pivot-pin"></div></div><div class="tonearm" id="tonearm"><div class="cartridge"></div></div><div class="controlpanel"><h2 class="picked-title" id="song">Choose a record</h2><p class="picked-by" id="artist">at the record wall</p><p class="playback-explainer" id="playbackExplainer" role="status" aria-live="polite">Select a listening source below to hear music. Commercial songs open in Spotify.</p><div class="playback-choices"><button type="button" class="listen-action" id="spotifyOpen">♫ Listen to this song on Spotify <span aria-hidden="true">↗</span></button><button type="button" class="listen-action secondary" id="jazzQuickPlay">▶ Play free jazz instead</button></div><div class="disc-controls"><button class="metalbutton" id="start" type="button" aria-label="Lower needle and show music player" title="Lower the needle">▶</button><button class="metalbutton" id="stop" type="button" aria-label="Stop and lift needle" title="Stop">■</button><span class="control-label" id="needleStatus" role="status" aria-live="polite">NEEDLE UP</span></div><div class="seekline"><span id="elapsed">0:00</span><input type="range" id="localSeek" value="0" min="0" max="1000" step="1" aria-label="Song position" disabled><span id="duration">0:00</span></div><div class="master-volume" style="grid-column:1/-1"><div class="volume-head"><span>VOLUME</span><output id="volumeValue" for="masterVolume">65%</output></div><div class="volume-row"><button type="button" id="muteVolume" aria-label="Mute audio" title="Mute audio">◖))</button><input id="masterVolume" type="range" min="0" max="100" value="65" step="1" aria-label="Turntable audio volume"></div><p>Volume controls imported music and Jazz Radio. Spotify has separate controls.</p></div><details class="source-drawer" id="sourceDrawer"><summary><span>LISTENING OPTIONS</span><span class="drawer-summary">Spotify · Jazz · Your files</span></summary><div class="source-content"><div class="radio-player" id="radioPlayer" style="grid-column:1/-1"><div class="radio-top"><span>JAZZ RADIO · DIRECT PLAY</span><span id="radioState">READY</span></div><select id="radioTrack" aria-label="Select Creative Commons jazz"><option value="0">Lobby Time — Kevin MacLeod</option><option value="1">Airport Lounge — Kevin MacLeod</option></select><button id="radioPlay" type="button">▶ PLAY JAZZ</button><p class="radio-credit">“Lobby Time” and “Airport Lounge” by Kevin MacLeod (incompetech.com), licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Jazz Radio is separate from the commercial album selected.</p></div><div class="local-player" id="localPlayer" style="grid-column:1/-1"><label class="import-label" for="audioFile">＋ ADD YOUR AUDIO FILE</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/mp4,audio/*" hidden><p class="spotify-note" id="localStatus">Add an MP3 or other audio file you are permitted to use. Then press the physical PLAY button.</p><button class="clear-audio" id="clearAudio" type="button" hidden>REMOVE IMPORTED AUDIO</button></div><div class="spotify-mount" id="spotifyMount" style="grid-column:1/-1"><p class="spotify-note">Or listen using Spotify’s official embedded player (preview/account restrictions apply).</p></div><p class="spotify-note source-disclaimer">Commercial songs use official Spotify embeds; full streaming depends on Spotify access. Your own audio stays on this device.</p></div></details><div class="player-cue"><span aria-hidden="true">↖</span> Click outside the turntable to return to the record wall · Esc to exit</div></div></div></div><div class="hand" id="hand" aria-hidden="true"><svg viewBox="0 0 126 190" xmlns="http://www.w3.org/2000/svg">
 <defs>
  <linearGradient id="skin" x1="0" x2="1" y1=".2" y2="1"><stop stop-color="#d6ae8c"/><stop offset=".3" stop-color="#ad8065"/><stop offset=".75" stop-color="#976b52"/><stop offset="1" stop-color="#624635"/></linearGradient>
  <linearGradient id="finger" x1="0" x2="1"><stop stop-color="#614637"/><stop offset=".25" stop-color="#c89f7c"/><stop offset=".65" stop-color="#b68b6d"/><stop offset="1" stop-color="#684a3c"/></linearGradient>
@@ -457,6 +467,7 @@ function place(index,button){
  byId('spotifyMount').replaceChildren();
  currentIframe=null;
  prepareLocal(index);
+ announcePlayback('Selected '+data.song+' by '+data.artist+'. Spotify is required for this commercial song; free jazz and your own audio can play directly.');
  setHint('Taking '+data.song+' from the shelf…');
  const complete=()=>{
    if(generation!==selectionGeneration)return;
@@ -466,7 +477,7 @@ function place(index,button){
    byId('artist').textContent=data.artist;
    byId('label').style.background=data.color;
    byId('label').style.color=data.ink;
-   setHint('Lower the needle to listen · Available audio sources are under Listening Options');
+   setHint('Choose Spotify, free jazz or your own audio to listen.');
  };
  if(document.documentElement.classList.contains('three-ready')){
    selectionTimer=setTimeout(complete,matchMedia('(prefers-reduced-motion: reduce)').matches?180:1180);
@@ -478,6 +489,51 @@ function place(index,button){
  requestAnimationFrame(()=>requestAnimationFrame(()=>{fly.classList.add('flymove');fly.style.left=(innerWidth*.50-60)+'px';fly.style.top=(innerHeight*.66-40)+'px';fly.style.width='120px';fly.style.height='120px';}));
  selectionTimer=setTimeout(()=>{fly.style.display='none';fly.classList.remove('flymove');complete();},840);
 }
+
+/* A commercial track cannot be streamed as a raw audio file from Spotify.
+   Offer its real track page and an optional embedded player, without promising
+   turntable-controlled playback. Free CC jazz and user audio play directly. */
+function spotifyTrackUrl(){
+ const track=tracks[chosen];
+ if(!track)return null;
+ if(track.id)return 'https://open.spotify.com/track/'+encodeURIComponent(track.id);
+ if(track.album)return 'https://open.spotify.com/album/'+encodeURIComponent(track.album);
+ return null;
+}
+function announcePlayback(message){
+ const node=byId('playbackExplainer');
+ if(node)node.textContent=message;
+}
+function showSpotifyEmbed(){
+ const target=spotifyTrackUrl();
+ if(!target)return false;
+ byId('sourceDrawer').open=true;
+ if(!currentIframe){
+  const iframe=document.createElement('iframe');
+  iframe.className='spotify';
+  iframe.title='Spotify player for '+tracks[chosen].song;
+  iframe.src=target.replace('open.spotify.com/','open.spotify.com/embed/');
+  iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+  iframe.loading='eager';
+  iframe.referrerPolicy='strict-origin-when-cross-origin';
+  byId('spotifyMount').replaceChildren(iframe);
+  currentIframe=iframe;
+ }
+ announcePlayback('Commercial songs play through Spotify, not the physical turntable controls. Press Play inside Spotify, or open the song in Spotify.');
+ setHint('Use the Spotify player below or open the selected track in Spotify.');
+ return true;
+}
+byId('spotifyOpen').addEventListener('click',()=>{
+ if(chosen<0)return;
+ showSpotifyEmbed();
+ const url=spotifyTrackUrl();
+ if(url){const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.click();}
+});
+byId('jazzQuickPlay').addEventListener('click',()=>{
+ if(chosen<0)return;
+ byId('sourceDrawer').open=true;
+ playJazz();
+});
 async function lower(){
  if(chosen<0){setHint('Pick an album from the wall first.');return;}
  if(sourceMode==='local'&&ownedAudio.getAttribute('src')){
@@ -487,17 +543,16 @@ async function lower(){
   return;
  }
  if(sourceMode==='radio'){await playJazz();return;}
- // Spotify playback happens in its own player; do not animate the vinyl before audio starts.
- byId('needleStatus').textContent='SPOTIFY · PLAY INSIDE';
- byId('sourceDrawer').open=true;
- if(!currentIframe){const iframe=document.createElement('iframe');iframe.className='spotify';iframe.title=tracks[chosen].song+' — Spotify player';iframe.src=tracks[chosen].album?'https://open.spotify.com/embed/album/'+tracks[chosen].album:'https://open.spotify.com/embed/track/'+tracks[chosen].id;iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';iframe.loading='eager';iframe.referrerPolicy='strict-origin-when-cross-origin';byId('spotifyMount').replaceChildren(iframe);currentIframe=iframe;}
- setHint('Use Play in Spotify · Streaming cannot be controlled directly by this turntable.');
+ // This physical button cannot start licensed streaming in Spotify.
+ byId('needleStatus').textContent='SPOTIFY · USE PLAYER';
+ showSpotifyEmbed();
 }
 function stop(){
  stopOwned();updateVinylState(false);if(sourceMode==='radio'){byId('radioState').textContent='STOPPED';byId('radioPlay').textContent='▶ PLAY JAZZ'}
  byId('spotifyMount').replaceChildren();
  currentIframe=null;
- setHint('Record stopped · Press ▶ to play again');
+ announcePlayback('Audio stopped. To hear the selected commercial song, open Spotify; free jazz and imported files play directly.');
+ setHint('Audio stopped · Choose a listening source.');
 }
 byId('audioFile').addEventListener('change',async event=>{
  const file=event.target.files?.[0];if(!file||chosen<0)return;
@@ -523,8 +578,8 @@ async function playJazz(){
  const pick=freeJazz[Number(byId('radioTrack').value)];
  if(sourceMode!=='radio'||ownedAudio.src!==pick.url){stopOwned();ownedAudio.src=pick.url;ownedAudio.load();}
  sourceMode='radio';
- try{await ownedAudio.play();updateVinylState(true);byId('radioState').textContent='PLAYING';byId('radioPlay').textContent='Ⅱ PAUSE JAZZ';setHint('Now playing '+pick.name+' by Kevin MacLeod (CC BY 4.0)');}
- catch(e){updateVinylState(false);byId('radioState').textContent='UNAVAILABLE';byId('radioPlay').textContent='▶ RETRY JAZZ';setHint('Jazz stream unavailable. Try importing a local audio file.');}
+ try{await ownedAudio.play();announcePlayback('Playing free jazz: '+pick.name+' by Kevin MacLeod — not '+tracks[chosen].song+'.');updateVinylState(true);byId('radioState').textContent='PLAYING';byId('radioPlay').textContent='Ⅱ PAUSE JAZZ';setHint('Now playing '+pick.name+' by Kevin MacLeod (CC BY 4.0)');}
+ catch(e){announcePlayback('The free jazz stream is unavailable. Try another source or import audio.');updateVinylState(false);byId('radioState').textContent='UNAVAILABLE';byId('radioPlay').textContent='▶ RETRY JAZZ';setHint('Jazz stream unavailable. Try importing a local audio file.');}
 }
 byId('radioPlay').addEventListener('click',playJazz);
 byId('radioTrack').addEventListener('change',()=>{if(sourceMode==='radio'){stopOwned();ownedAudio.removeAttribute('src');ownedAudio.load();sourceMode='none';updateVinylState(false);}byId('radioState').textContent='READY';byId('radioPlay').textContent='▶ PLAY JAZZ';});
