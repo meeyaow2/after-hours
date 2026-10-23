@@ -295,7 +295,7 @@ test('perspective-aligned sleeve hit targets allow choosing edge and middle reco
   const position=await page.evaluate(i=>{
     const {scene,camera}=window.afterHours3D;
     const sleeve=scene.children.find(o=>o.userData?.record===i);
-    const p=sleeve.position.clone().add(new camera.constructor(0,0,.075)).project(camera);
+    const p=sleeve.position.clone();p.z+=.075;p.project(camera);
     const r=document.getElementById('world3d').getBoundingClientRect();
     return {x:r.left+(p.x+1)*r.width/2,y:r.top+(1-p.y)*r.height/2};
   },index);
