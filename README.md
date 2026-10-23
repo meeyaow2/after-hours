@@ -1,35 +1,29 @@
-# After Hours — First-Person Vinyl Listening Room
+# After Hours — First-person vinyl listening room
 
-A small, atmospheric browser experience. You are standing in front of a wall of jazz records, with a turntable on the wooden table in front of you. Reach for a sleeve, place the record on the platter and lower the needle.
+A small gameplay-inspired listening room. Stand in front of a wall of records, reach for a sleeve, put it on the turntable, and listen.
 
-## Play
+## Live website
 
 https://meeyaow2.github.io/ops-music-playground/
 
-## How to interact
+## Music selection
 
-1. Move your cursor over one of the **12 records** on the wall and click to pick it up.
-2. The record animates toward the turntable, transitioning into a close-up player view.
-3. Use the turntable's **START**, **STOP** and **NEEDLE** buttons to control playback.
-4. Adjust volume on the player, use **NEXT RECORD**, or return to the wall.
-5. On keyboards, press **Space** to play/pause and **Escape** to return to the wall.
+The room currently contains eight selectable records featuring tracks by **Bruno Mars**, **keshi**, **Billie Eilish**, **Adele**, and Lady Gaga with Bruno Mars. Music plays through official **Spotify embeds** rather than being downloaded or rehosted.
 
-## Design
+A Spotify account, region, and playback entitlement can affect whether listeners hear previews or full tracks. Start playback inside the Spotify player when prompted. The turntable's **STOP** button removes the embed to halt its playback.
 
-- First-person perspective instead of normal website tabs, drawers, cards or navigation.
-- Visible sleeve wall, walnut furniture, physical turntable and hand-like mouse pointer.
-- Responsive scene, including a 4-column shelf layout on smaller screens.
-- Original Web Audio jazz-inspired synthesized instrument sketches, with no commercially licensed music.
-- No login, API key, dependency installation or build step.
+## Gameplay
 
-## Limitations
+1. Move over a sleeve on the record wall and click to pick it up.
+2. Watch the album move toward the table and transition into the close-up turntable.
+3. Press the turntable's **START** button to lower the needle and reveal the Spotify music player.
+4. Start audio in the Spotify embed, or press **STOP** to lift the needle and stop the embedded player.
+5. Return to the wall to select another record.
 
-This is a self-contained **2.5D CSS-perspective** MVP, not yet a fully modeled first-person 3D world. Hands, record pickup and the camera transition are stylized rather than photorealistic, and the generated music is intentionally an early prototype. Browser audio needs a user gesture before it can play.
+## Technical notes
 
-## Deploy
-
-GitHub Pages serves the repository's root `index.html` from the `main` branch. Subsequent commits redeploy automatically.
-
-## Project history
-
-This repository originally hosted **Bops**, a browser beat sequencer, then an atmospheric jazz-bar concept. It now hosts the first-person vinyl-listening experience.
+- Static HTML sleeves remain visible even if the interaction script cannot run.
+- HTML, CSS, JavaScript; responsive layout and no build step.
+- Perspective-styled room and animated hand; **not yet photorealistic 3D or full character animation**.
+- The turntable animation represents the needle state, not independently confirmed third-party audio playback.
+- Github Pages deploys `index.html` from the main branch.
