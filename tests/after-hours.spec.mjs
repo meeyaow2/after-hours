@@ -157,8 +157,8 @@ test('commercial-song player makes Spotify dependency explicit',async({page})=>{
  await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
  await page.locator('.sleeve').nth(2).evaluate(el=>el.click());
  await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7000});
- await expect(page.locator('#playbackExplainer')).toContainText('Spotify or Apple Music');
- await expect(page.locator('#appleOpen')).toBeVisible();
+ await expect(page.locator('#playbackExplainer')).toContainText('Spotify');
+ await expect(page.locator('#appleOpen')).toHaveCount(0);
  await expect(page.locator('#spotifyOpen')).toBeVisible();
  await expect(page.locator('#jazzQuickPlay')).toBeVisible();
  await page.locator('#start').evaluate(el=>el.click());
@@ -269,20 +269,6 @@ test('turntable realism materials retain functional scene objects',async({page})
 });
 
 
-test('Apple Music player resolves selected catalog track with official embed',async({page})=>{
- test.setTimeout(85000);
- await page.setViewportSize({width:1440,height:900});
- await page.route('https://itunes.apple.com/search?**',route=>{
-  const body={resultCount:1,results:[{trackName:'BIRDS OF A FEATHER',artistName:'Billie Eilish',trackViewUrl:'https://music.apple.com/sg/album/birds-of-a-feather/1739659134?i=1739659145'}]};
-  return route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify(body)});
- });
- await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
- await page.locator('.sleeve').nth(2).evaluate(el=>el.click());
- await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:8000});
- await page.locator('#appleOpen').evaluate(el=>el.click());
- await expect(page.locator('#appleMount iframe.apple-embed')).toHaveAttribute('src',/embed.music.apple.com\/sg\/album\/birds-of-a-feather/,{timeout:8000});
- await expect(page.locator('#appleMount .apple-link')).toHaveAttribute('href',/music.apple.com\/sg\/album/);
-});
 test('perspective-aligned sleeve hit targets allow choosing edge and middle records',async({page})=>{
  test.setTimeout(130000);
  await page.setViewportSize({width:1440,height:900});
@@ -306,4 +292,20 @@ test('perspective-aligned sleeve hit targets allow choosing edge and middle reco
   await expect(page.locator('#game')).not.toHaveClass(/playing-view/,{timeout:5000});
   await page.waitForTimeout(600);
  }
+});
+
+
+test('Spotify-only listening controls preserve official track links',async({page})=>{
+ test.setTimeout(85000);
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await page.locator('.sleeve').nth(2).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:8000});
+ await expect(page.locator('#appleOpen')).toHaveCount(0);
+ await expect(page.locator('#appleMount')).toHaveCount(0);
+ await expect(page.locator('#spotifyOpen')).toBeVisible();
+ await page.locator('#start').evaluate(el=>el.click());
+ await expect(page.locator('#sourceDrawer')).toHaveAttribute('open','');
+ await expect(page.locator('#spotifyMount iframe')).toHaveAttribute('src',/open.spotify.com\/embed\/track\/6dOtVTDdiauQNBQEDOtlAB/);
+ await expect(page.locator('#vinyl')).not.toHaveClass(/spinning/);
 });
