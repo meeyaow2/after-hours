@@ -37,3 +37,11 @@ Show the journey from an ordinary streaming interface to an immersive first-pers
 - Selecting Spotify opens the Listening Options drawer and makes the official embedded player's limitations explicit.
 - The turntable gained fine hardware detailing (metal rim, screws, standby indicator) and subtle undershelf lighting.
 - The player's status and exit instructions are more discoverable and accessible.
+
+## Listening-room rebuild — tactile 3D and mobile
+- **Record handling** now contains explicit sleeve-lift, disc-extraction and platter-placement stages, with reduced-motion shortcuts and a brief stage indicator.
+- **Turntable** uses an in-repository modeled assembly: lacquered wood plinth, satin-aluminum trim, engraved platter ridges, pitch slider, speed knob, inset controls, screws and hardware labels. This is a reusable procedural Three.js model, **not** an imported third-party photogrammetry/GLB asset.
+- **Room atmosphere** adds shoji-inspired panels, a restrained lantern and greenery. Light intensity increases gently during confirmed direct-audio playback. This is playback-state-reactive ambience, not waveform analysis.
+- **Mobile** displays a 3-column (2-column on narrow phones), keyboard-friendly collection of all twelve records with updated artwork, replacing tiny raycast-only hit targets on small screens.
+- **Regression testing** lives in `tests/after-hours.spec.mjs`, runs at 390px, 768px, 1440px and 1920px, and is executed through `.github/workflows/after-hours-qa.yml` on relevant pushes. It covers album selection, controls, volume, exit and JavaScript errors.
+- **Audio boundaries** remain: Spotify's embeds may not allow full direct playback or custom volume control; no commercial MP3s are ripped or hosted.
