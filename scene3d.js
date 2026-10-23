@@ -273,6 +273,7 @@ function move(e){
 cv.addEventListener('pointermove',move);
 cv.addEventListener('pointerleave',()=>{hover=null;updateAlbumHover(-1)});
 cv.addEventListener('click',e=>{
+ if(performance.now()-lastExitAt<350)return;
  handGrab=1;
  const hit=testHit(e);
  if(!hit&&mode==='wall')return;
@@ -312,6 +313,7 @@ function insidePolygon(x,y,polygon){
  }
  return inside;
 }
+let lastExitAt=-Infinity;
 game.addEventListener('pointerup',event=>{
  if(!game.classList.contains('playing-view'))return;
  if(event.button!==0 && event.pointerType==='mouse')return;
@@ -322,6 +324,7 @@ game.addEventListener('pointerup',event=>{
  if(typeof window.exitTurntable==='function'){
   event.preventDefault();
   event.stopPropagation();
+  lastExitAt=performance.now();
   window.exitTurntable();
  }
 },true);
