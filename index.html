@@ -239,8 +239,43 @@
 .three-ready .player-scene .controlpanel .seekline input{accent-color:#d2b185}
 .three-ready .player-scene .controlpanel .seekline:has(input:disabled){opacity:.62}
 @media(max-width:700px){.player-cue{font-size:9px}}
+
+/* Touch-first mobile gallery keeps all 12 records discoverable */
+.mobile-collection{display:none}
+@media(max-width:700px){
+ .three-ready .mobile-collection{
+  position:absolute;z-index:26;left:12px;right:12px;top:100px;bottom:26px;
+  display:flex;flex-direction:column;gap:9px;
+  pointer-events:auto;min-height:0
+ }
+ .three-ready .game.playing-view .mobile-collection{display:none}
+ .mobile-intro{padding:9px 8px 7px;color:#e3ceb2;background:#21150dd9;border-radius:7px;flex:none}
+ .mobile-intro>span{font:600 11px Arial,sans-serif;letter-spacing:.15em}
+ .mobile-intro p{margin:5px 0 0;font:12px Georgia,serif;color:#cbb292}
+ .mobile-record-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-auto-rows:max-content;gap:9px;padding:2px 2px 24px;
+  overflow:auto;overscroll-behavior:contain;scrollbar-width:thin
+ }
+ .mobile-record{
+  min-width:0;min-height:44px;border:1px solid #b29a7645;
+  background:#241910e8;color:#efe0c9;padding:5px;
+  display:flex;align-items:stretch;flex-direction:column;gap:4px;
+  border-radius:6px;text-align:left;cursor:pointer
+ }
+ .mobile-record:focus-visible{outline:2px solid #f6d8a1;outline-offset:2px}
+ .mobile-cover{width:100%;aspect-ratio:1;position:relative;display:block;background:#59402f;overflow:hidden;border-radius:3px}
+ .mobile-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+ .mobile-cover-fallback{position:absolute;inset:0;display:grid;place-items:center;padding:8px;font:13px Georgia,serif;text-align:center}
+ .mobile-record-title{font:600 11px/1.22 Arial,sans-serif;letter-spacing:.01em;min-height:28px}
+ .mobile-record-artist{font:10px/1.2 Arial,sans-serif;color:#c2a27d}
+ .three-ready .game.playing-view .player-scene .controlpanel{max-height:52dvh}
+}
+@media(max-width:360px){
+ .mobile-record-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 </style></head><body>
-<main class="game" id="game"><div class="room" id="room"><div class="wall"></div><div class="floor"></div><div class="shelves" id="shelves"><div class="slot"><button class="sleeve" type="button" data-record="0" data-track="0nJW01T7XtvILxQgC5J7Wh" aria-label="Pick up When I Was Your Man by Bruno Mars" style="--art:#694535;--arttext:#e7c8a3"><img class="cover-image" src="https://iscale.iheart.com/catalog/album/20634084" alt="Unorthodox Jukebox — Bruno Mars original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Unorthodox Jukebox — Bruno Mars</span></button></div>
+<main class="game" id="game"><section class="mobile-collection" id="mobileCollection" aria-label="Choose a record"><div class="mobile-intro"><span>THE COLLECTION</span><p>Choose a record to take to the turntable.</p></div><div class="mobile-record-grid" id="mobileRecordGrid"></div></section><div class="room" id="room"><div class="wall"></div><div class="floor"></div><div class="shelves" id="shelves"><div class="slot"><button class="sleeve" type="button" data-record="0" data-track="0nJW01T7XtvILxQgC5J7Wh" aria-label="Pick up When I Was Your Man by Bruno Mars" style="--art:#694535;--arttext:#e7c8a3"><img class="cover-image" src="https://iscale.iheart.com/catalog/album/20634084" alt="Unorthodox Jukebox — Bruno Mars original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Unorthodox Jukebox — Bruno Mars</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="1" data-track="2bdVgAQgosGUJoViVDNeOV" aria-label="Pick up LIMBO by keshi" style="--art:#303d49;--arttext:#c9d7d4"><img class="cover-image" src="https://coverartarchive.org/release/43665699-1d57-4963-82dd-27189b4509d7/front-500" alt="GABRIEL — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">GABRIEL — keshi</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="2" data-track="6dOtVTDdiauQNBQEDOtlAB" aria-label="Pick up BIRDS OF A FEATHER by Billie Eilish" style="--art:#3c4561;--arttext:#e4d3bd"><img class="cover-image" src="https://i5.walmartimages.com/asr/b2784256-d043-42c5-9db2-817b7b51c464.bb82c3e714c6c4d7ce4ff0dfa1b106af.jpeg" alt="HIT ME HARD AND SOFT — Billie Eilish original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">HIT ME HARD AND SOFT — Billie Eilish</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="3" data-track="0gplL1WMoJ6iYaPgMCL0gX" aria-label="Pick up Easy On Me by Adele" style="--art:#705047;--arttext:#e8cdbb"><img class="cover-image" src="https://experiencevinyl.com/cdn/shop/products/adele_30-128200.jpg?v=1634307300" alt="30 — Adele original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">30 — Adele</span></button></div>
@@ -430,6 +465,40 @@ byId('radioPlay').addEventListener('click',playJazz);
 byId('radioTrack').addEventListener('change',()=>{if(sourceMode==='radio'){stopOwned();ownedAudio.removeAttribute('src');ownedAudio.load();sourceMode='none';updateVinylState(false);}byId('radioState').textContent='READY';byId('radioPlay').textContent='▶ PLAY JAZZ';});
 ownedAudio.addEventListener('playing',()=>{if(sourceMode==='radio'){updateVinylState(true);byId('radioState').textContent='PLAYING';byId('radioPlay').textContent='Ⅱ PAUSE JAZZ';}});
 byId('shelves').addEventListener('click',event=>{const el=event.target.closest('[data-record]');if(el)place(Number(el.dataset.record),el);});
+
+/* Mobile users get large touch targets and artwork rather than tiny 3D raycast hit areas. */
+const mobileRecordGrid=byId('mobileRecordGrid');
+const originals=[...document.querySelectorAll('button.sleeve[data-record]')];
+for(const original of originals){
+ const i=Number(original.dataset.record);
+ const button=document.createElement('button');button.type='button';button.className='mobile-record';
+ button.setAttribute('aria-label',original.getAttribute('aria-label')||'Select record');
+ button.dataset.index=String(i);
+ const artwork=document.createElement('span');artwork.className='mobile-cover';
+ const img=document.createElement('img');img.alt='';img.loading='lazy';
+ const fallback=document.createElement('span');fallback.className='mobile-cover-fallback';fallback.textContent=tracks[i].artist;
+ fallback.style.background=tracks[i].color;
+ artwork.append(img,fallback);
+ const title=document.createElement('span');title.className='mobile-record-title';title.textContent=tracks[i].song;
+ const artist=document.createElement('span');artist.className='mobile-record-artist';artist.textContent=tracks[i].artist;
+ const sync=()=>{
+  const originalImage=original.querySelector('img.cover-image');
+  const src=originalImage?.getAttribute('src');
+  if(src){img.src=src;img.style.display='block';}
+ };
+ img.addEventListener('load',()=>fallback.style.display='none');
+ img.addEventListener('error',()=>{img.style.display='none';fallback.style.display='grid'});
+ original.addEventListener('coverready',sync);
+ sync();
+ button.append(artwork,title,artist);
+ button.addEventListener('click',()=>{
+  if(moving)return;
+  window.afterHours3D?.selectRecord(i);
+  place(i,original);
+ });
+ mobileRecordGrid.appendChild(button);
+}
+
 
 const masterVolume=byId('masterVolume'), volumeValue=byId('volumeValue'), muteVolume=byId('muteVolume');
 let lastNonZeroVolume=.65;
