@@ -64,7 +64,7 @@ const deckBody=block(2.72,.19,1.9,m('#6a5540',.52),0,.90,2.4);
 block(2.79,.075,1.98,black,0,.79,2.4);
 const platter=cylinder(.76,.10,steel,-.53,1.075,2.4);
 const platterBase=cylinder(.70,.045,black,-.53,1.142,2.4);
-const recordGroup=new THREE.Group();recordGroup.position.set(-.53,1.174,2.4);scene.add(recordGroup);
+const recordGroup=new THREE.Group();recordGroup.position.set(-.53,1.174,2.4);scene.add(recordGroup);recordGroup.visible=false;let recordPlacement=0;
 const record=new THREE.Mesh(new THREE.CylinderGeometry(.692,.692,.012,112),new THREE.MeshPhysicalMaterial({color:'#101113',metalness:.26,roughness:.27,clearcoat:.85,clearcoatRoughness:.14}));recordGroup.add(record);
 const groove=new THREE.Group();groove.rotation.x=-Math.PI/2;groove.position.y=.008;
 for(let r=.26;r<.68;r+=.019){const mesh=new THREE.Mesh(new THREE.TorusGeometry(r,.0015,3,100),new THREE.MeshStandardMaterial({color:r% .04>.02?'#262628':'#303032',metalness:.52,roughness:.35}));groove.add(mesh)}
@@ -294,6 +294,12 @@ function animate(){
  look.lerp(gaze,1-Math.exp(-dt*2.5));
  camera.lookAt(look);
  mode=targetMode;
+ // Animate setting the selected record down onto the platter when the camera arrives.
+ recordPlacement=THREE.MathUtils.damp(recordPlacement,targetMode==='deck'?1:0,reducedMotion?18:2.5,dt);
+ recordGroup.visible=recordPlacement>.03;
+ const landing=recordPlacement*recordPlacement*(3-2*recordPlacement);
+ recordGroup.position.y=1.174+(1-landing)*.48;
+ recordGroup.scale.setScalar(.89+landing*.11);
  // Spin the record only while local playback/needle state is active.
  const playing=document.getElementById('vinyl').classList.contains('spinning');
  motorSpeed=THREE.MathUtils.damp(motorSpeed,playing?Math.PI*1.1:0,playing?2.5:4.5,dt);
