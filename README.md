@@ -1,28 +1,53 @@
-# After Hours — A first-person vinyl listening room
+# After Hours — A 3D Vinyl Listening Room
 
-**Live website:** https://meeyaow2.github.io/ops-music-playground/
+**Live site:** https://meeyaow2.github.io/ops-music-playground/
 
-A gameplay-inspired listening room. Choose a sleeve from the record wall, put it on the turntable, and listen.
+First-person-inspired 3D vinyl listening room built using Three.js and static HTML. Walk up to a wall of albums, choose a record, and move into a turntable view.
 
-## Featured artists
+## Record collection
 
-Bruno Mars, keshi, Billie Eilish, Adele, plus a Lady Gaga / Bruno Mars collaboration. These commercial songs are **not bundled as MP3s**. Official Spotify track embeds may provide previews or full playback subject to the listener's account and region.
+Ten commercial song selections:
+- Bruno Mars — When I Was Your Man
+- keshi — LIMBO
+- Billie Eilish — BIRDS OF A FEATHER
+- Adele — Easy On Me
+- Lady Gaga & Bruno Mars — Die With A Smile
+- keshi — Soft Spot
+- Billie Eilish — ocean eyes
+- Adele — Someone Like You
+- No Guidnce — Is It A Crime?
+- OSA — Test Of Time (Spotify's *Quarter Life Crisis* album player)
 
-## Play your own audio directly
+Commercial songs **are not hosted as MP3s in this repository**. Spotify embeds may play previews or require Spotify sign-in or app playback, and cannot be reliably started or controlled through a separate third-party play button.
 
-1. Pick a record from the wall.
-2. On the turntable screen choose **+ ADD YOUR AUDIO FILE**.
-3. Select an MP3, WAV, M4A or other supported audio file **you have permission to use**.
-4. Press the physical **▶** button to play; **■** stops and resets playback.
-5. Seek with the progress slider. Your imported audio is associated with the selected record.
-6. Use **REMOVE IMPORTED AUDIO** to delete a file from this browser's saved collection.
+## Directly playable Jazz Radio
 
-Local audio uses the browser’s HTML audio engine, not Spotify. Imported audio is stored privately in **IndexedDB** on the user's device (subject to browser storage availability/quotas), not uploaded to GitHub or the server. Clearing browser data removes the imports. Importing a file doesn't grant rights to share or redistribute it.
+On the turntable, select **Jazz Radio** to play a Creative Commons recording directly:
+- "Lobby Time" — Kevin MacLeod (incompetech.com)
+- "Airport Lounge" — Kevin MacLeod (incompetech.com)
 
-## Spotify fallback
+Both are licensed under the **Creative Commons Attribution 4.0 International License**:
+https://creativecommons.org/licenses/by/4.0/
 
-If no local file has been imported, pressing ▶ shows an official Spotify embed. Spotify imposes its own playback policies. You may need to press Play inside the embed, and the turntable cannot control the Spotify iframe's internal transport. **STOP** removes the embedded player.
+Source and attribution:
+- "Lobby Time" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.
+  https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600054
+- "Airport Lounge" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.
+  https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100806
 
-## Technology
+The direct streams come from incompetech.com. Internet connectivity and the host's availability are required. When Jazz Radio or a local audio file is playing, the 3D record spins.
 
-Single-file static HTML/CSS/JavaScript, local IndexedDB and native Audio, CSS perspective stage and responsive layout. No build step. This remains a stylized 2.5D scene, not full photorealistic 3D. Published via GitHub Pages from `main`.
+## Local audio files
+
+Choose **+ ADD YOUR AUDIO FILE** to import an MP3/WAV/M4A you have the rights to use. Files are stored privately in browser IndexedDB (where storage is supported), not sent to GitHub. The turntable controls and progress slider control these files directly.
+
+## Architecture
+
+- `index.html`: Gameplay presentation, record library, audio imports and official Spotify player
+- `scene3d.js`: Three.js 3D room, cabinet, shelves, albums, hand, record player, camera animation and raycasting
+- CSS scene fallback if WebGL or Three.js fails to load
+- GitHub Pages deploys the `main` branch from the repository root
+
+## Caveats
+
+The 3D models are procedurally modeled and not photorealistic scans. External album-cover images may not load on every host. The code passes JavaScript syntax checks, but full browser playback validation on every device remains outstanding.
