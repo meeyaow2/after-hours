@@ -13,7 +13,7 @@ const scene=new THREE.Scene();scene.background=new THREE.Color('#17100c');scene.
 const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.08,100);
 camera.position.set(0,2.55,9.1);
 const wallCamera=new THREE.Vector3(0,2.65,7.8),wallLook=new THREE.Vector3(0,2.4,-2.0);
-const deckCamera=new THREE.Vector3(.28,4.05,5.75),deckLook=new THREE.Vector3(0,.88,2.2);
+const deckCamera=new THREE.Vector3(0,3.65,6.35),deckLook=new THREE.Vector3(.22,1.02,2.4);
 const look=new THREE.Vector3().copy(wallLook);
 camera.lookAt(look);
 const hemi=new THREE.HemisphereLight(0xf6d1a6,0x1c1512,1.35);scene.add(hemi);
