@@ -274,6 +274,26 @@
 @media(max-width:360px){
  .mobile-record-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* Final mobile art direction: separate the interactive collection from the 3D scenery */
+@media(max-width:700px){
+ .three-ready .mobile-collection{
+  top:99px;bottom:12px;left:10px;right:10px;
+  border:1px solid #9b76503d;border-radius:12px;
+  padding:10px;
+  background:linear-gradient(160deg,#22150ff5 0%,#160f0ced 100%);
+  box-shadow:0 12px 44px #0009;
+  -webkit-backdrop-filter:blur(19px);
+  backdrop-filter:blur(19px);
+  gap:8px;
+ }
+ .mobile-intro{padding:5px 4px 10px;background:transparent;border-bottom:1px solid #ad8a5c45;border-radius:0}
+ .mobile-record-grid{flex:1;min-height:0;padding:2px 2px 18px;gap:8px}
+ .mobile-record{background:#302016;border-color:#a988604c;padding:5px;gap:5px}
+ .mobile-record-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:27px}
+ .mobile-record-artist{line-height:1.25;min-height:13px}
+ .mobile-record:hover,.mobile-record:focus-visible{border-color:#d5b27f}
+}
 </style></head><body>
 <main class="game" id="game"><section class="mobile-collection" id="mobileCollection" aria-label="Choose a record"><div class="mobile-intro"><span>THE COLLECTION</span><p>Choose a record to take to the turntable.</p></div><div class="mobile-record-grid" id="mobileRecordGrid"></div></section><div class="room" id="room"><div class="wall"></div><div class="floor"></div><div class="shelves" id="shelves"><div class="slot"><button class="sleeve" type="button" data-record="0" data-track="0nJW01T7XtvILxQgC5J7Wh" aria-label="Pick up When I Was Your Man by Bruno Mars" style="--art:#694535;--arttext:#e7c8a3"><img class="cover-image" src="https://iscale.iheart.com/catalog/album/20634084" alt="Unorthodox Jukebox — Bruno Mars original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">Unorthodox Jukebox — Bruno Mars</span></button></div>
 <div class="slot"><button class="sleeve" type="button" data-record="1" data-track="2bdVgAQgosGUJoViVDNeOV" aria-label="Pick up LIMBO by keshi" style="--art:#303d49;--arttext:#c9d7d4"><img class="cover-image" src="https://coverartarchive.org/release/43665699-1d57-4963-82dd-27189b4509d7/front-500" alt="GABRIEL — keshi original album artwork" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cover-fallback" aria-hidden="true">GABRIEL — keshi</span></button></div>
