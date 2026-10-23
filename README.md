@@ -1,29 +1,28 @@
-# After Hours — First-person vinyl listening room
+# After Hours — A first-person vinyl listening room
 
-A small gameplay-inspired listening room. Stand in front of a wall of records, reach for a sleeve, put it on the turntable, and listen.
+**Live website:** https://meeyaow2.github.io/ops-music-playground/
 
-## Live website
+A gameplay-inspired listening room. Choose a sleeve from the record wall, put it on the turntable, and listen.
 
-https://meeyaow2.github.io/ops-music-playground/
+## Featured artists
 
-## Music selection
+Bruno Mars, keshi, Billie Eilish, Adele, plus a Lady Gaga / Bruno Mars collaboration. These commercial songs are **not bundled as MP3s**. Official Spotify track embeds may provide previews or full playback subject to the listener's account and region.
 
-The room currently contains eight selectable records featuring tracks by **Bruno Mars**, **keshi**, **Billie Eilish**, **Adele**, and Lady Gaga with Bruno Mars. Music plays through official **Spotify embeds** rather than being downloaded or rehosted.
+## Play your own audio directly
 
-A Spotify account, region, and playback entitlement can affect whether listeners hear previews or full tracks. Start playback inside the Spotify player when prompted. The turntable's **STOP** button removes the embed to halt its playback.
+1. Pick a record from the wall.
+2. On the turntable screen choose **+ ADD YOUR AUDIO FILE**.
+3. Select an MP3, WAV, M4A or other supported audio file **you have permission to use**.
+4. Press the physical **▶** button to play; **■** stops and resets playback.
+5. Seek with the progress slider. Your imported audio is associated with the selected record.
+6. Use **REMOVE IMPORTED AUDIO** to delete a file from this browser's saved collection.
 
-## Gameplay
+Local audio uses the browser’s HTML audio engine, not Spotify. Imported audio is stored privately in **IndexedDB** on the user's device (subject to browser storage availability/quotas), not uploaded to GitHub or the server. Clearing browser data removes the imports. Importing a file doesn't grant rights to share or redistribute it.
 
-1. Move over a sleeve on the record wall and click to pick it up.
-2. Watch the album move toward the table and transition into the close-up turntable.
-3. Press the turntable's **START** button to lower the needle and reveal the Spotify music player.
-4. Start audio in the Spotify embed, or press **STOP** to lift the needle and stop the embedded player.
-5. Return to the wall to select another record.
+## Spotify fallback
 
-## Technical notes
+If no local file has been imported, pressing ▶ shows an official Spotify embed. Spotify imposes its own playback policies. You may need to press Play inside the embed, and the turntable cannot control the Spotify iframe's internal transport. **STOP** removes the embedded player.
 
-- Static HTML sleeves remain visible even if the interaction script cannot run.
-- HTML, CSS, JavaScript; responsive layout and no build step.
-- Perspective-styled room and animated hand; **not yet photorealistic 3D or full character animation**.
-- The turntable animation represents the needle state, not independently confirmed third-party audio playback.
-- Github Pages deploys `index.html` from the main branch.
+## Technology
+
+Single-file static HTML/CSS/JavaScript, local IndexedDB and native Audio, CSS perspective stage and responsive layout. No build step. This remains a stylized 2.5D scene, not full photorealistic 3D. Published via GitHub Pages from `main`.
