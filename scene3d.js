@@ -110,7 +110,7 @@ function makeHand(){
    side:THREE.DoubleSide,toneMapped:false
  });
  const width=.96,height=.93;
- const plane=new THREE.Mesh(new THREE.PlaneGeometry(width,height),mat);
+ const plane=new THREE.Mesh(new THREE.PlaneGeometry(width*1.3,height*1.3),mat);
  // Image fingertip is near its top left: offset plane so fingertip tracks the cursor.
  plane.position.set(.35,-.43,0);
  plane.renderOrder=999;
@@ -121,14 +121,14 @@ function makeHand(){
  group.userData.state='idle';
  group.userData.setState=state=>{group.userData.state=state;};
  const loader=new THREE.TextureLoader();
- loader.load('./assets/hand/hand-real.webp',texture=>{
+ loader.load('./assets/hand/hand-real.webp?v=verified2',texture=>{
    texture.colorSpace=THREE.SRGBColorSpace;
    texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
    mat.map=texture;mat.needsUpdate=true;
    group.userData.ready=true;
  },undefined,()=>console.warn('Real hand texture could not be loaded'));
  camera.add(group);
- group.position.set(.8,-.7,-1.9);
+ group.position.set(.65,-.64,-1.9);
  return group;
 }
 handMeshes=makeHand();
@@ -189,7 +189,7 @@ function animate(){
  const handZ=-1.9;
  const viewHeight=2*Math.abs(handZ)*Math.tan(THREE.MathUtils.degToRad(camera.fov)*.5);
  const viewWidth=viewHeight*camera.aspect;
- const aimingX=pointerActive?pointer.x:.58,aimingY=pointerActive?pointer.y:-.65;
+ const aimingX=pointerActive?pointer.x:.35,aimingY=pointerActive?pointer.y:-.42;
  const reaching=mode==='wall'&&hover?.userData.record!==undefined;
  handGrab=Math.max(0,handGrab-dt*3.2);
  const grabbing=handGrab>.2;
