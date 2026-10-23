@@ -10,6 +10,9 @@ for (const width of widths) {
       page.on('pageerror', error => errors.push(error.message));
       await page.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded' });
       await expect(page.locator('.sleeve')).toHaveCount(12);
+      await expect(page.locator('#startupVeil')).toBeAttached();
+      await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:12000});
+      await expect(page.locator('#startupVeil')).toHaveCSS('pointer-events','none',{timeout:8000});
       await expect(page.locator('#song')).toBeAttached();
       await expect(page.locator('#masterVolume')).toBeAttached();
       await expect(page.locator('#sourceDrawer')).toBeAttached();
@@ -162,4 +165,21 @@ test('commercial-song player makes Spotify dependency explicit',async({page})=>{
  await expect(page.locator('#spotifyMount iframe.spotify')).toHaveAttribute('src',/open.spotify.com\/embed\/track\/6dOtVTDdiauQNBQEDOtlAB/);
  await expect(page.locator('#vinyl')).not.toHaveClass(/spinning/);
  await expect(page.locator('#playbackExplainer')).toContainText('Press Play inside Spotify');
+});
+
+
+test('startup stays covered until room is rendered and then reveals',async({page})=>{
+ test.setTimeout(55000);
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#startupVeil')).toBeAttached();
+ await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:12000});
+ await expect(page.locator('#startupVeil')).toHaveCSS('pointer-events','none');
+ const ready=await page.evaluate(()=>document.documentElement.classList.contains('three-ready'));
+ if(ready){
+  const camera=await page.evaluate(()=>({x:window.afterHours3D.camera.position.x,y:window.afterHours3D.camera.position.y,z:window.afterHours3D.camera.position.z}));
+  expect(camera.x).toBeCloseTo(0,1);
+  expect(camera.y).toBeCloseTo(2.65,1);
+  expect(camera.z).toBeCloseTo(7.8,1);
+ }
 });
