@@ -113,3 +113,36 @@ for (const width of [390,1440]) {
   await expect(page.locator('#vinyl')).not.toHaveClass(/spinning/);
  });
 }
+
+
+test.describe('Safe-space onboarding and physical exit', () => {
+ test.use({viewport:{width:1440,height:900},deviceScaleFactor:1});
+ test.setTimeout(75000);
+ test('welcome dismiss persists in session and does not gate records',async({page})=>{
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#sanctuaryNote')).toBeVisible();
+  await page.locator('#dismissWelcome').click();
+  await expect(page.locator('#sanctuaryNote')).toBeHidden();
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#sanctuaryNote')).toBeHidden();
+  await page.locator('.sleeve').nth(4).evaluate(el=>el.click());
+  await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7000});
+  await expect(page.locator('#song')).toContainText('Die With A Smile');
+  expect(errors).toEqual([]);
+ });
+ test('outside pointer click exits, inside player controls do not',async({page})=>{
+  await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+  await page.waitForTimeout(1500);
+  const ready=await page.evaluate(()=>document.documentElement.classList.contains('three-ready'));
+  if(!ready)test.skip(true,'WebGL unavailable on runner; existing Escape fallback still covered');
+  await page.locator('#dismissWelcome').evaluate(el=>el.click());
+  await page.locator('.sleeve').first().evaluate(el=>el.click());
+  await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7000});
+  await page.locator('#quietSwitch').evaluate(el=>el.click());
+  await expect(page.locator('#game')).toHaveClass(/playing-view/);
+  await page.locator('#quietSwitch').evaluate(el=>el.click());
+  await page.mouse.click(10,Math.floor(page.viewportSize().height*.42));
+  await expect(page.locator('#game')).not.toHaveClass(/playing-view/,{timeout:4000});
+ });
+});
