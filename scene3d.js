@@ -11,7 +11,7 @@ renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFi
 game.insertBefore(cv,room);
 const scene=new THREE.Scene();scene.background=new THREE.Color('#17100c');scene.fog=new THREE.FogExp2('#20150e',.025);
 const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.08,100);
-camera.position.set(0,2.55,9.1);
+camera.position.set(0,2.65,7.8);
 const wallCamera=new THREE.Vector3(0,2.65,7.8),wallLook=new THREE.Vector3(0,2.4,-2.0);
 const deckCamera=new THREE.Vector3(0,3.3,6.55),deckLook=new THREE.Vector3(0,1.02,2.4);
 const look=new THREE.Vector3().copy(wallLook);
@@ -556,6 +556,23 @@ function animate(){
  handImage.style.opacity=handReady&&mode==='wall'&&innerWidth>700?'0.98':'0';
  renderer.render(scene,camera);
 }
-document.documentElement.classList.add('three-ready');
+/* Render the fully constructed scene before revealing the WebGL version.
+   Prevents a flash of HTML geometry and the first-frame camera glide. */
+let startupFrames=0;
+const startupClock=new THREE.Clock();
+function revealWhenStable(){
+ if(game.classList.contains('scene-settled'))return;
+ // Two painted frames allow shader compilation and texture uploads to settle.
+ if(++startupFrames<2){requestAnimationFrame(revealWhenStable);return;}
+ document.documentElement.classList.add('three-ready');
+ requestAnimationFrame(()=>{
+  requestAnimationFrame(()=>{
+   game.classList.add('scene-settled');
+   dispatchEvent(new Event('afterhours:ready'));
+  });
+ });
+}
 window.afterHours3D={renderer,scene,camera,selectRecord(index){updateRecordLabel(index);beginPickup(index)},reset:resetSleeves};
+renderer.render(scene,camera);
 animate();
+requestAnimationFrame(revealWhenStable);
