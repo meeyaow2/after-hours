@@ -283,12 +283,48 @@ cv.addEventListener('click',e=>{
  }else{
    if(hit?.userData.action==='start'){document.getElementById('start').click();return;}
    if(hit?.userData.action==='stop'){document.getElementById('stop').click();return;}
-   // Leave the player only when clicking outside its physical table in the 3D world.
-   ray.setFromCamera(pointer,camera);
-   const onTable=ray.intersectObjects([tableTop,deckBody,platter,platterBase,record],false).length>0;
-   if(!onTable&&typeof window.exitTurntable==='function')window.exitTurntable();
+   // Returning to the wall is handled by the scene-level pointer listener below.
+   // That listener also works when visual overlays sit above the WebGL canvas.
  }
 });
+
+/* Return to the record wall when the visitor clicks outside the actual tabletop.
+   Listen on the GAME in capture phase: the overlay prevents canvas clicks in some
+   browsers. We project the four tabletop corners to screen space instead of
+   raycasting a giant invisible tabletop that can swallow clicks. */
+function tabletopScreenPolygon(){
+ const rect=cv.getBoundingClientRect();
+ const corners=[[-2.775,1.245],[2.775,1.245],[2.775,3.555],[-2.775,3.555]];
+ return corners.map(([x,z])=>{
+  const world=new THREE.Vector3(x,tableTop.position.y+0.065,z);
+  world.project(camera);
+  return {
+   x:rect.left+(world.x+1)*rect.width/2,
+   y:rect.top+(1-world.y)*rect.height/2
+  };
+ });
+}
+function insidePolygon(x,y,polygon){
+ let inside=false;
+ for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){
+  const a=polygon[i],b=polygon[j];
+  if((a.y>y)!==(b.y>y) && x<(b.x-a.x)*(y-a.y)/(b.y-a.y)+a.x)inside=!inside;
+ }
+ return inside;
+}
+game.addEventListener('pointerup',event=>{
+ if(!game.classList.contains('playing-view'))return;
+ if(event.button!==0 && event.pointerType==='mouse')return;
+ const target=event.target;
+ if(target instanceof Element && target.closest('.controlpanel,button,input,select,textarea,summary,a,label,details'))return;
+ const poly=tabletopScreenPolygon();
+ if(insidePolygon(event.clientX,event.clientY,poly))return;
+ if(typeof window.exitTurntable==='function'){
+  event.preventDefault();
+  event.stopPropagation();
+  window.exitTurntable();
+ }
+},true);
 
 let keyboardIndex=-1;
 function keyboardPick(index){
