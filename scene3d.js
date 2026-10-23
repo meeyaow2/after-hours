@@ -31,7 +31,7 @@ block(30,.16,25,floorMat,0,-.12,-1.5,false);
 for(let x=-14;x<15;x+=.7)block(.012,.003,24,m('#4a2e1e'),x,-.03,-1.6,false);
 block(8.8,3.2,.20,sideWood,0,2.6,-3.09);
 for(const y of [1.03,2.57,4.1])block(8.95,.14,.48,shelfMat,0,y,-2.79);
-for(const x of [-4.45,-2.67,-.89,.89,2.67,4.45])block(.13,3.15,.52,shelfMat,x,2.55,-2.8);
+for(const x of [-4.45,-2.967,-1.483,0,1.483,2.967,4.45])block(.13,3.15,.52,shelfMat,x,2.55,-2.8);
 for(const y of [1.8,3.34]){const led=new THREE.PointLight(0xc08a4e,2.5,3);led.position.set(0,y,-2.1);scene.add(led)}
 // The foreground cabinet and turntable are physical world objects, not HTML illustrations.
 block(5.4,.84,2.35,wood,0,.23,2.4);
@@ -64,7 +64,7 @@ const vinylHits=[];
 const albums=[...document.querySelectorAll('.sleeve')];
 const texLoader=new THREE.TextureLoader();texLoader.setCrossOrigin('anonymous');
 for(let i=0;i<albums.length;i++){
- const x=-3.56+(i%5)*1.78,y=i<5?3.32:1.80;
+ const x=-3.70+(i%6)*1.48,y=i<6?3.32:1.80;
  const cover=albums[i];const raw=cover.querySelector('img');
  const color=cover.style.getPropertyValue('--art')||'#49392f';
  const artCanvas=document.createElement('canvas');artCanvas.width=512;artCanvas.height=512;
@@ -78,7 +78,7 @@ for(let i=0;i<albums.length;i++){
  artCtx.font='22px Georgia';artCtx.fillText('AFTER HOURS · THE COLLECTION',256,55);
  const placeholder=new THREE.CanvasTexture(artCanvas);placeholder.colorSpace=THREE.SRGBColorSpace;
  const front=new THREE.MeshStandardMaterial({map:placeholder,roughness:.83});
- const geo=new THREE.BoxGeometry(1.39,1.39,.075);
+ const geo=new THREE.BoxGeometry(1.18,1.18,.075);
  const box=new THREE.Mesh(geo,[m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),front,m('#1b1511')]);
  box.position.set(x,y,-2.36);box.rotation.y=-.05;box.castShadow=true;box.userData.record=i;scene.add(box);vinylHits.push(box);
  if(raw?.src){
