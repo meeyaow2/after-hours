@@ -45,3 +45,11 @@ Show the journey from an ordinary streaming interface to an immersive first-pers
 - **Mobile** displays a 3-column (2-column on narrow phones), keyboard-friendly collection of all twelve records with updated artwork, replacing tiny raycast-only hit targets on small screens.
 - **Regression testing** lives in `tests/after-hours.spec.mjs`, runs at 390px, 768px, 1440px and 1920px, and is executed through `.github/workflows/after-hours-qa.yml` on relevant pushes. It covers album selection, controls, volume, exit and JavaScript errors.
 - **Audio boundaries** remain: Spotify's embeds may not allow full direct playback or custom volume control; no commercial MP3s are ripped or hosted.
+
+## Safe-space direction — October 2026
+After Hours is framed as **a little space to escape the noise**: no feed, no likes, no recommendations or urgency. The welcome is optional and dismissible within the browser session; it never gates the record collection.
+
+- Homepage language: “Some days, you just need a little room to yourself. Pick a record. Stay a while. The world can wait.”
+- The collection and brand use calmer, non-judgmental wording.
+- **Quiet Mode** hides extra UI hints, hover text and pickup prompts while leaving albums and the full player functional. It is reversible and announced with `aria-pressed`.
+- This is an atmospheric design concept, not a claim to provide therapeutic or mental-health services.
