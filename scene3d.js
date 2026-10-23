@@ -478,7 +478,7 @@ function sleeveAtScreenPoint(clientX,clientY){
 function testHit(e){
  const bounds=cv.getBoundingClientRect();pointer.set((e.clientX-bounds.left)/bounds.width*2-1,-(e.clientY-bounds.top)/bounds.height*2+1);
  ray.setFromCamera(pointer,camera);
- return mode==='wall'?(sleeveAtScreenPoint(e.clientX,e.clientY)||ray.intersectObjects(vinylHits,false)[0]?.object||null):(ray.intersectObjects(buttons,false)[0]?.object||null)
+ return mode==='wall'?(sleeveAtScreenPoint(e.clientX,e.clientY)||ray.intersectObjects(vinylHits,false)[0]?.object||null):(ray.intersectObjects(buttons,false)[0]?.object||ray.intersectObjects([record],false)[0]?.object||null)
 }
 function move(e){
  pointerActive=true;
@@ -501,6 +501,7 @@ cv.addEventListener('click',e=>{
  }else{
    if(hit?.userData.action==='start'){document.getElementById('start').click();return;}
    if(hit?.userData.action==='stop'){document.getElementById('stop').click();return;}
+    if(hit===record && recordGroup.visible){document.getElementById('start').click();return;}
    // Returning to the wall is handled by the scene-level pointer listener below.
    // That listener also works when visual overlays sit above the WebGL canvas.
  }
@@ -611,8 +612,8 @@ function animate(){
   }
   travelRecord.quaternion.copy(from.quaternion).slerp(new THREE.Quaternion(),t);
   travelRecord.scale.setScalar(THREE.MathUtils.lerp(from.scale,1,t));
-  travelRecord.visible=t<.999;
-  if(t>=.999){
+  travelRecord.visible=t<.98;
+  if(t>=.98){
    travelRecord.visible=false;
    pickupState.stage='placed';pickupState.extractionPose=null;
    if(selectedSleeve){selectedSleeve.position.copy(selectedSleeve.userData.home);selectedSleeve.rotation.set(0,-.05,0);selectedSleeve.scale.setScalar(1);selectedSleeve.renderOrder=0;selectedSleeve=null;}
