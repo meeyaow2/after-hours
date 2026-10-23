@@ -336,3 +336,27 @@ test('vinyl extraction and placement use continuous motion',async({page})=>{
  await page.keyboard.press('Escape');
  await expect(page.locator('#game')).not.toHaveClass(/playing-view/);
 });
+
+
+test('private Ocean Eyes audio overrides Spotify for its record',async({page})=>{
+ test.setTimeout(100000);
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await page.locator('.sleeve').nth(6).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:9000});
+ await expect(page.locator('#spotifyOpen')).toBeVisible();
+ const wav=Buffer.from('UklGRn4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'base64');
+ await page.locator('#audioFile').setInputFiles({name:'ocean eyes.wav',mimeType:'audio/wav',buffer:wav});
+ await expect(page.locator('#game')).toHaveClass(/has-local-audio/,{timeout:8000});
+ await expect(page.locator('#spotifyOpen')).toBeHidden();
+ await expect(page.locator('#localStatus')).toContainText('ocean eyes.wav');
+ await page.keyboard.press('Escape');
+ await expect(page.locator('#game')).not.toHaveClass(/playing-view/);
+ await page.locator('.sleeve').nth(6).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/has-local-audio/,{timeout:10000});
+ await expect(page.locator('#spotifyOpen')).toBeHidden();
+ await page.keyboard.press('Escape');
+ await page.locator('.sleeve').nth(0).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:9000});
+ await expect(page.locator('#spotifyOpen')).toBeVisible();
+});
