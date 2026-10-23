@@ -266,3 +266,43 @@ test('turntable realism materials retain functional scene objects',async({page})
  await expect(page.locator('#sourceDrawer')).toHaveAttribute('open','');
  expect(errors).toEqual([]);
 });
+
+
+test('Apple Music player resolves selected catalog track with official embed',async({page})=>{
+ test.setTimeout(85000);
+ await page.setViewportSize({width:1440,height:900});
+ await page.route('https://itunes.apple.com/search?**',route=>{
+  const body={resultCount:1,results:[{trackName:'BIRDS OF A FEATHER',artistName:'Billie Eilish',trackViewUrl:'https://music.apple.com/sg/album/birds-of-a-feather/1739659134?i=1739659145'}]};
+  return route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify(body)});
+ });
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await page.locator('.sleeve').nth(2).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:8000});
+ await page.locator('#appleOpen').evaluate(el=>el.click());
+ await expect(page.locator('#appleMount iframe.apple-embed')).toHaveAttribute('src',/embed.music.apple.com\/sg\/album\/birds-of-a-feather/,{timeout:8000});
+ await expect(page.locator('#appleMount .apple-link')).toHaveAttribute('href',/music.apple.com\/sg\/album/);
+});
+test('perspective-aligned sleeve hit targets allow choosing edge and middle records',async({page})=>{
+ test.setTimeout(130000);
+ await page.setViewportSize({width:1440,height:900});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:15000});
+ if(!await page.evaluate(()=>!!window.afterHours3D))test.skip(true,'WebGL unavailable');
+ await page.locator('#dismissWelcome').evaluate(el=>el.click());
+ const choices=[0,5,6,11,2,9];
+ for(const index of choices){
+  const position=await page.evaluate(i=>{
+    const {scene,camera}=window.afterHours3D;
+    const sleeve=scene.children.find(o=>o.userData?.record===i);
+    const p=sleeve.position.clone().add(new camera.constructor(0,0,.075)).project(camera);
+    const r=document.getElementById('world3d').getBoundingClientRect();
+    return {x:r.left+(p.x+1)*r.width/2,y:r.top+(1-p.y)*r.height/2};
+  },index);
+  await page.mouse.click(position.x,position.y);
+  await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:8000});
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#game')).not.toHaveClass(/playing-view/,{timeout:5000});
+  await page.waitForTimeout(600);
+ }
+});
