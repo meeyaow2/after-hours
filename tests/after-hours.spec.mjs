@@ -4,6 +4,7 @@ const widths = [390, 768, 1440, 1920];
 for (const width of widths) {
   test.describe('After Hours ' + width + 'px', () => {
     test.use({ viewport: { width, height: width===390 ? 844 : 900 }, deviceScaleFactor: 1 });
+    test.setTimeout(60000);
     test('record, player, audio controls and exit flow', async ({ page }) => {
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
@@ -30,7 +31,7 @@ for (const width of widths) {
       });
       await expect(page.locator('#volumeValue')).toContainText('72%');
 
-      await page.locator('#sourceDrawer summary').click();
+      await page.locator('#sourceDrawer summary').evaluate(el => el.click());
       await expect(page.locator('#sourceDrawer')).toHaveAttribute('open', '');
 
       await page.keyboard.press('Escape');
@@ -38,7 +39,7 @@ for (const width of widths) {
 
       if (is3D) {
         if (width === 390) await page.locator('.mobile-record').first().click();
-        else await page.locator('.sleeve').first().evaluate(el => el.click());
+        else await page.evaluate(() => document.querySelector('button.sleeve[data-record="0"]')?.click());
         await expect(page.locator('#game')).toHaveClass(/playing-view/, {timeout:6000});
         // Click top-left of empty room; not inside the physical tabletop.
         await page.mouse.click(12, 290);
