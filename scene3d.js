@@ -62,6 +62,54 @@ block(5.4,.84,2.35,wood,0,.23,2.4);
 const tableTop=block(5.55,.13,2.48,shelfMat,0,.73,2.4);
 const deckBody=block(2.72,.19,1.9,m('#6a5540',.52),0,.90,2.4);
 block(2.79,.075,1.98,black,0,.79,2.4);
+
+/* In-repository premium turntable model — physically modeled and reusable,
+   no external GLB dependency. Existing record and tonearm remain the
+   functional moving parts. */
+const unit=new THREE.Group();unit.name='AfterHoursTurntable';scene.add(unit);
+function addHardware(geometry,material,x,y,z){
+ const mesh=new THREE.Mesh(geometry,material);
+ mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;unit.add(mesh);return mesh;
+}
+const aluminum=m('#aeb4b3',.25,.88);
+const satinBlack=m('#1a1b1c',.52,.27);
+const darkDial=m('#32363a',.30,.62);
+const lacquer=new THREE.MeshPhysicalMaterial({color:0x5d4130,roughness:.31,metalness:.09,clearcoat:.72,clearcoatRoughness:.20});
+const trim=new THREE.Mesh(new THREE.BoxGeometry(2.76,.045,1.94),aluminum);trim.position.set(0,.994,2.4);trim.receiveShadow=true;unit.add(trim);
+const woodLip=addHardware(new THREE.BoxGeometry(2.82,.095,2),lacquer,0,.795,2.4);
+const lidFeet=[[-1.18,1.6],[1.18,1.6],[-1.18,3.18],[1.18,3.18]];
+for(const [x,z] of lidFeet){
+ addHardware(new THREE.CylinderGeometry(.075,.075,.027,24),darkDial,x,.775,z);
+}
+function cylinderHardware(r1,r2,h,segments,material,x,y,z){
+ return addHardware(new THREE.CylinderGeometry(r1,r2,h,segments),material,x,y,z);
+}
+const platterRidge=cylinderHardware(.779,.779,.031,112,aluminum,-.53,1.138,2.4);
+const rubberRing=cylinderHardware(.716,.716,.015,112,satinBlack,-.53,1.161,2.4);
+// Platter's radial ridges are thin engraved rings; avoid high-cost torus forests.
+const ridgeMat=m('#767d7e',.48,.6);
+for(let r=.726;r<.773;r+=.008){
+ const line=new THREE.Mesh(new THREE.TorusGeometry(r,.0015,3,112),ridgeMat);
+ line.rotation.x=-Math.PI/2;line.position.set(-.53,1.159,2.4);unit.add(line);
+}
+const knobBase=cylinderHardware(.13,.13,.021,40,darkDial,1.03,1.041,2.33);
+const speedKnob=cylinderHardware(.091,.091,.083,40,aluminum,1.03,1.092,2.33);
+const speedMarker=addHardware(new THREE.BoxGeometry(.012,.003,.055),satinBlack,1.03,1.137,2.31);
+const pitchSlot=addHardware(new THREE.BoxGeometry(.050,.012,.51),satinBlack,1.14,1.035,2.05);
+const pitchSlider=addHardware(new THREE.BoxGeometry(.12,.042,.075),aluminum,1.14,1.061,2.04);
+const matWood=m('#593a27',.65);
+const deckInset=addHardware(new THREE.BoxGeometry(.035,.006,1.84),matWood,1.345,1.013,2.4);
+const stylusHead=addHardware(new THREE.BoxGeometry(.21,.07,.14),satinBlack,.86,1.095,1.65);
+const powerEmboss=cylinderHardware(.045,.045,.008,32,aluminum,1.15,1.028,2.75);
+// Fine printed deck markings as a canvas decal.
+const decalCanvas=document.createElement('canvas');decalCanvas.width=512;decalCanvas.height=128;
+const decal=decalCanvas.getContext('2d');decal.clearRect(0,0,512,128);
+decal.fillStyle='#d8d1c4';decal.font='bold 40px Georgia';decal.fillText('AFTER HOURS',12,48);
+decal.font='22px Arial';decal.fillText('DIRECT DRIVE · 33⅓ RPM',12,89);
+const decalTexture=new THREE.CanvasTexture(decalCanvas);decalTexture.colorSpace=THREE.SRGBColorSpace;
+const decalPlane=new THREE.Mesh(new THREE.PlaneGeometry(.87,.21),new THREE.MeshBasicMaterial({map:decalTexture,transparent:true,depthWrite:false}));
+decalPlane.rotation.x=-Math.PI/2;decalPlane.position.set(.88,1.028,1.72);unit.add(decalPlane);
+
 const platter=cylinder(.76,.10,steel,-.53,1.075,2.4);
 const platterBase=cylinder(.70,.045,black,-.53,1.142,2.4);
 const recordGroup=new THREE.Group();recordGroup.position.set(-.53,1.174,2.4);scene.add(recordGroup);recordGroup.visible=false;let recordPlacement=0;
