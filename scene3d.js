@@ -465,8 +465,8 @@ function sleeveAtScreenPoint(clientX,clientY){
   const pixelY=bounds.top+(1-center.y)*bounds.height*.5;
   const edgeX=sleeve.position.clone().add(new THREE.Vector3(.59,0,.075)).project(camera);
   const edgeY=sleeve.position.clone().add(new THREE.Vector3(0,.59,.075)).project(camera);
-  const halfW=Math.max(25,Math.abs(edgeX.x-center.x)*bounds.width*.5+7);
-  const halfH=Math.max(25,Math.abs(edgeY.y-center.y)*bounds.height*.5+7);
+  const halfW=Math.max(31,Math.abs(edgeX.x-center.x)*bounds.width*.5+11);
+  const halfH=Math.max(31,Math.abs(edgeY.y-center.y)*bounds.height*.5+11);
   const dx=(clientX-pixelX)/halfW,dy=(clientY-pixelY)/halfH;
   const score=dx*dx+dy*dy;
   if(Math.abs(dx)<=1&&Math.abs(dy)<=1&&score<closestScore){
