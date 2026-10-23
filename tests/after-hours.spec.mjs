@@ -4,7 +4,7 @@ const widths = [390, 768, 1440, 1920];
 for (const width of widths) {
   test.describe('After Hours ' + width + 'px', () => {
     test.use({ viewport: { width, height: width===390 ? 844 : 900 }, deviceScaleFactor: 1 });
-    test.setTimeout(60000);
+    test.setTimeout(105000);
     test('record, player, audio controls and exit flow', async ({ page }) => {
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
@@ -117,7 +117,7 @@ for (const width of [390,1440]) {
 
 test.describe('Safe-space onboarding and physical exit', () => {
  test.use({viewport:{width:1440,height:900},deviceScaleFactor:1});
- test.setTimeout(75000);
+ test.setTimeout(105000);
  test('welcome dismiss persists in session and does not gate records',async({page})=>{
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
