@@ -132,7 +132,7 @@ const pitchSlot=addHardware(new THREE.BoxGeometry(.050,.012,.51),satinBlack,1.14
 const pitchSlider=addHardware(new THREE.BoxGeometry(.12,.042,.075),aluminum,1.14,1.061,2.04);
 const matWood=m('#593a27',.65);
 const deckInset=addHardware(new THREE.BoxGeometry(.035,.006,1.84),matWood,1.345,1.013,2.4);
-const stylusHead=addHardware(new THREE.BoxGeometry(.21,.07,.14),satinBlack,.86,1.095,1.65);
+const stylusHead=addHardware(new THREE.BoxGeometry(.21,.07,.14),satinBlack,.86,1.095,1.65);stylusHead.visible=false;
 const powerEmboss=cylinderHardware(.045,.045,.008,32,aluminum,1.15,1.028,2.75);
 
 /* Fine machining details replace the plain primitive-machine look. */
@@ -207,8 +207,8 @@ const spindle=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.055,20),steel
 const toneBase=cylinder(.13,.13,steel,.94,1.055,1.9);
 const tonePivot=new THREE.Group();tonePivot.position.set(.94,1.16,1.9);scene.add(tonePivot);
 function beamBetween(parent,a,b,r,material){const v1=new THREE.Vector3(...a),v2=new THREE.Vector3(...b),dif=v2.clone().sub(v1);const beam=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dif.length(),14),material);beam.position.copy(v1.clone().add(v2).multiplyScalar(.5));beam.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dif.normalize());beam.castShadow=true;parent.add(beam);return beam}
-beamBetween(tonePivot,[0,.02,0],[-.14,.03,-.5],.025,steel);
-beamBetween(tonePivot,[-.14,.03,-.5],[-1.03,-.04,-.66],.021,steel);
+beamBetween(tonePivot,[0,.02,0],[-.15,.03,.20],.023,steel);
+beamBetween(tonePivot,[-.15,.03,.20],[-.925,-.04,.945],.019,steel);
 
 const pivotBearing=new THREE.Mesh(new THREE.CylinderGeometry(.095,.095,.08,48),aluminum);
 pivotBearing.position.set(0,.02,0);tonePivot.add(pivotBearing);
@@ -217,9 +217,9 @@ counterweight.rotation.x=Math.PI/2;counterweight.position.set(.045,.045,.19);ton
 const weightRim=new THREE.Mesh(new THREE.TorusGeometry(.09,.006,6,48),aluminum);
 weightRim.position.set(.045,.045,.274);tonePivot.add(weightRim);
 const toneCollar=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.065,24),aluminum);
-toneCollar.rotation.x=Math.PI/2;toneCollar.position.set(-.14,.03,-.5);tonePivot.add(toneCollar);
-const cartridge=new THREE.Mesh(new THREE.BoxGeometry(.16,.10,.22),black);cartridge.position.set(-1.04,-.07,-.68);tonePivot.add(cartridge);
-const tip=new THREE.Mesh(new THREE.ConeGeometry(.012,.07,8),steel);tip.position.set(-1.04,-.15,-.68);tip.rotation.x=Math.PI; tonePivot.add(tip);
+toneCollar.rotation.x=Math.PI/2;toneCollar.position.set(-.15,.03,.20);tonePivot.add(toneCollar);
+const cartridge=new THREE.Mesh(new THREE.BoxGeometry(.16,.10,.22),black);cartridge.position.set(-.940,-.07,.956);tonePivot.add(cartridge);
+const tip=new THREE.Mesh(new THREE.ConeGeometry(.012,.07,8),steel);tip.position.set(-.940,-.15,.956);tip.rotation.x=Math.PI; tonePivot.add(tip);
 const lightLed=cylinder(.027,.01,new THREE.MeshStandardMaterial({color:0xe8c486,emissive:'#c38734',emissiveIntensity:1.4}),1.1,1.018,2.88);
 const buttons=[];
 for(const [x,z,type] of [[.83,2.92,'start'],[1.20,2.92,'stop']]){
