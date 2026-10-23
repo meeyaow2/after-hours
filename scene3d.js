@@ -35,8 +35,8 @@ for(const x of [-4.45,-2.967,-1.483,0,1.483,2.967,4.45])block(.13,3.15,.52,shelf
 for(const y of [1.8,3.34]){const led=new THREE.PointLight(0xc08a4e,2.5,3);led.position.set(0,y,-2.1);scene.add(led)}
 // The foreground cabinet and turntable are physical world objects, not HTML illustrations.
 block(5.4,.84,2.35,wood,0,.23,2.4);
-block(5.55,.13,2.48,shelfMat,0,.73,2.4);
-block(2.72,.19,1.9,m('#6a5540',.52),0,.90,2.4);
+const tableTop=block(5.55,.13,2.48,shelfMat,0,.73,2.4);
+const deckBody=block(2.72,.19,1.9,m('#6a5540',.52),0,.90,2.4);
 block(2.79,.075,1.98,black,0,.79,2.4);
 const platter=cylinder(.76,.10,steel,-.53,1.075,2.4);
 const platterBase=cylinder(.70,.045,black,-.53,1.142,2.4);
@@ -138,14 +138,18 @@ cv.addEventListener('pointermove',move);
 cv.addEventListener('click',e=>{
  handGrab=1;
  const hit=testHit(e);
- if(!hit)return;
+ if(!hit&&mode==='wall')return;
  if(mode==='wall'){
    const idx=hit.userData.record;if(idx===undefined)return;
    picked=idx;const native=albums[idx];
    native.click(); // reuse existing local audio setup, selection and camera state
  }else{
-   if(hit.userData.action==='start')document.getElementById('start').click();
-   else if(hit.userData.action==='stop')document.getElementById('stop').click();
+   if(hit?.userData.action==='start'){document.getElementById('start').click();return;}
+   if(hit?.userData.action==='stop'){document.getElementById('stop').click();return;}
+   // Leave the player only when clicking outside its physical table in the 3D world.
+   ray.setFromCamera(pointer,camera);
+   const onTable=ray.intersectObjects([tableTop,deckBody,platter,platterBase,record],false).length>0;
+   if(!onTable&&typeof window.exitTurntable==='function')window.exitTurntable();
  }
 });
 const observer=new MutationObserver(()=>{
