@@ -29,3 +29,11 @@ Show the journey from an ordinary streaming interface to an immersive first-pers
 3. Playback limitation: an embedded commercial player cannot be controlled by custom hardware controls.
 4. Solution: progressive source disclosure and direct-play modes where legal and technically supported.
 5. Iterations: sleeve geometry, center alignment, human-hand artwork, camera transitions, and responsive controls.
+
+## Refinement pass — interaction reliability and hardware feel
+- Album transitions now have cancellation guards, helping avoid a stale camera transition after exiting.
+- A selected sleeve reveals its title/artist in a subtle hover plaque.
+- Direct audio Play switches to Pause while audio is running; the vinyl motor and needle are synchronized to supported HTMLAudioElement events.
+- Selecting Spotify opens the Listening Options drawer and makes the official embedded player's limitations explicit.
+- The turntable gained fine hardware detailing (metal rim, screws, standby indicator) and subtle undershelf lighting.
+- The player's status and exit instructions are more discoverable and accessible.
