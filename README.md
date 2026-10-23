@@ -6,7 +6,7 @@ First-person-inspired 3D vinyl listening room built using Three.js and static HT
 
 ## Record collection
 
-Ten commercial song selections:
+Eleven commercial song selections:
 - Bruno Mars — When I Was Your Man
 - keshi — LIMBO
 - Billie Eilish — BIRDS OF A FEATHER
@@ -17,6 +17,7 @@ Ten commercial song selections:
 - Adele — Someone Like You
 - No Guidnce — Is It A Crime?
 - OSA — Test Of Time (Spotify's *Quarter Life Crisis* album player)
+- GIVĒON — Heartbreak Anniversary
 
 Commercial songs **are not hosted as MP3s in this repository**. Spotify embeds may play previews or require Spotify sign-in or app playback, and cannot be reliably started or controlled through a separate third-party play button.
 
