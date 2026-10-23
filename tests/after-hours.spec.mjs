@@ -190,7 +190,7 @@ test('mobile Quiet Mode stays separate from the brand and helper text',async({pa
  await page.setViewportSize({width:390,height:844});
  await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
  await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:12000});
- await expect(page.locator('.rightnote')).toBeHidden();
+ await expect(page.locator('.rightnote')).toHaveCount(0);
  const header=await page.evaluate(()=>{
   const a=document.querySelector('.brand').getBoundingClientRect();
   const b=document.querySelector('#quietSwitch').getBoundingClientRect();
@@ -198,6 +198,23 @@ test('mobile Quiet Mode stays separate from the brand and helper text',async({pa
  });
  expect(header.brandRight).toBeLessThan(header.buttonLeft);
  expect(header.buttonRight).toBeLessThanOrEqual(header.screen);
+ await page.locator('#quietSwitch').click();
+ await expect(page.locator('#quietSwitch')).toHaveAttribute('aria-pressed','true');
+});
+
+test('extra-narrow mobile header has no overlapping slogan at 320px',async({page})=>{
+ test.setTimeout(40000);
+ await page.setViewportSize({width:320,height:690});
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:12000});
+ await expect(page.locator('.rightnote')).toHaveCount(0);
+ const positions=await page.evaluate(()=>{
+  const brand=document.querySelector('.brand').getBoundingClientRect();
+  const button=document.querySelector('#quietSwitch').getBoundingClientRect();
+  return {brandRight:brand.right,buttonLeft:button.left,buttonRight:button.right,screen:innerWidth};
+ });
+ expect(positions.brandRight).toBeLessThanOrEqual(positions.buttonLeft);
+ expect(positions.buttonRight).toBeLessThanOrEqual(positions.screen);
  await page.locator('#quietSwitch').click();
  await expect(page.locator('#quietSwitch')).toHaveAttribute('aria-pressed','true');
 });
