@@ -309,17 +309,21 @@ for(let i=0;i<albums.length;i++){
  cover.addEventListener('coverready',e=>setCover(e.detail.url));
 }
 
+
+/* The sleeve, exposed disc, and platter share a single continuous path. */
+const smooth01=t=>{const x=THREE.MathUtils.clamp(t,0,1);return x*x*(3-2*x)};
+const pickupFront=new THREE.Vector3();
+const landingPosition=new THREE.Vector3(-.53,1.18,2.4);
 function beginPickup(index){
  const item=vinylHits[index];
  if(!item||pickupState.active||game.classList.contains('playing-view'))return;
  updateRecordLabel(index);
  pickupState.active=true;pickupState.album=item;
  pickupState.from=item.position.clone();pickupState.elapsed=0;
- pickupState.duration=reducedMotion?.21:1.16;
- pickupState.stage='lifting';
- pickupState.index=index;
- selectedSleeve=item;
- item.renderOrder=12;
+ pickupState.duration=reducedMotion?.20:1.16;
+ pickupState.stage='lifting';pickupState.index=index;
+ pickupState.extractionPose=null;
+ selectedSleeve=item;item.renderOrder=12;
  travelRecord.visible=false;
  setPickupStage('Lifting record sleeve');
 }
@@ -328,7 +332,7 @@ function resetSleeves(){
   item.position.copy(item.userData.home);
   item.rotation.set(0,-.05,0);item.scale.setScalar(1);item.renderOrder=0;
  }
- pickupState.active=false;pickupState.stage='none';
+ pickupState.active=false;pickupState.stage='none';pickupState.extractionPose=null;
  selectedSleeve=null;travelRecord.visible=false;
  setPickupStage('');
 }
@@ -342,34 +346,43 @@ function animateSleeveHover(dt){
   item.scale.setScalar(THREE.MathUtils.damp(item.scale.x,active?1.055:1,10,dt));
  }
 }
-
 function animatePickup(dt){
  if(!pickupState.active||!pickupState.album)return;
  pickupState.elapsed+=dt;
  const t=Math.min(1,pickupState.elapsed/pickupState.duration);
- const ease=t*t*(3-2*t),item=pickupState.album;
- const from=pickupState.from;
- const focus=new THREE.Vector3(from.x*.17,2.47,.30);
- item.position.lerpVectors(from,focus,ease);
- item.rotation.y=-.05+ease*.27;item.rotation.x=-ease*.06;
- item.scale.setScalar(1+ease*.16);
- if(t>.6&&pickupState.stage==='lifting'){pickupState.stage='extracting';setPickupStage('Taking vinyl from sleeve')}
- // The newly revealed record slides from its cardboard sleeve, then lifts free.
- if(t>.58){
-  const u=Math.min(1,(t-.58)/.42);
+ const item=pickupState.album,from=pickupState.from;
+ // Hold the sleeve in front of the viewer while the disc slides along its opening.
+ const approach=smooth01(t/.58);
+ const focus=pickupFront.set(from.x*.19,2.40,.42);
+ item.position.lerpVectors(from,focus,approach);
+ item.rotation.y=-.05+approach*.13;
+ item.rotation.x=-approach*.07;
+ item.scale.setScalar(1+approach*.12);
+ const exposed=smooth01((t-.29)/.56);
+ if(exposed>0){
+  if(pickupState.stage==='lifting'){
+   pickupState.stage='extracting';
+   setPickupStage('Taking vinyl from sleeve');
+  }
   travelRecord.visible=true;
   travelRecord.position.set(
-    THREE.MathUtils.lerp(item.position.x,item.position.x+.68,u),
-    item.position.y-.22,
-    item.position.z+.12+u*.33
+   item.position.x+.10+exposed*.63,
+   item.position.y-.02+exposed*.11,
+   item.position.z-.07+exposed*.24
   );
-  travelRecord.rotation.set(Math.PI/2*(1-u*.4),0,.17*u);
-  travelRecord.scale.setScalar(.68);
+  travelRecord.rotation.set(Math.PI/2-.11*exposed,0,-.05+exposed*.08);
+  travelRecord.scale.setScalar(.68+exposed*.08);
  }
  if(t>=1){
+  // Keep the *actual* end pose: no sudden jump when the camera moves to the deck.
+  pickupState.extractionPose={
+   position:travelRecord.position.clone(),
+   quaternion:travelRecord.quaternion.clone(),
+   scale:travelRecord.scale.x
+  };
   pickupState.active=false;pickupState.stage='held';
-  item.position.copy(item.userData.home);item.rotation.set(0,-.05,0);item.scale.setScalar(1);
-  // Keep the sleeve in place; the separated vinyl is carried to the turntable.
+  item.position.copy(item.userData.home);
+  item.rotation.set(0,-.05,0);item.scale.setScalar(1);item.renderOrder=0;
   setPickupStage('Placing the record');
  }
 }
@@ -581,22 +594,28 @@ function animate(){
  mode=targetMode;
  if(mode!=='wall')updateAlbumHover(-1);
  // Animate setting the selected record down onto the platter when the camera arrives.
- recordPlacement=THREE.MathUtils.damp(recordPlacement,targetMode==='deck'?1:0,reducedMotion?18:2.5,dt);
- recordGroup.visible=recordPlacement>.90;
- const landing=recordPlacement*recordPlacement*(3-2*recordPlacement);
- if(pickupState.stage==='held'){
-  const from=new THREE.Vector3(0,2.25,.94),to=new THREE.Vector3(-.53,1.174,2.4);
-  const step=Math.min(1,recordPlacement/.9),ease=step*step*(3-2*step);
-  travelRecord.position.lerpVectors(from,to,ease);
-  travelRecord.rotation.x=Math.PI*.24*(1-ease);
-  travelRecord.rotation.z=0;
-  travelRecord.scale.setScalar(.68+ease*.31);
-  travelRecord.visible=step<1;
-  if(recordPlacement>.94){travelRecord.visible=false;setPickupStage('');pickupState.stage='placed';}
+
+ // Placement starts at exactly the pose where extraction ended. We finish the
+ // move before revealing the full-size disc to avoid two visible copies.
+ const landingActive=targetMode==='deck'&&(pickupState.stage==='held'||pickupState.stage==='placed');
+ recordPlacement=THREE.MathUtils.damp(recordPlacement,landingActive?1:0,reducedMotion?18:2.3,dt);
+ if(pickupState.stage==='held'&&pickupState.extractionPose){
+  const from=pickupState.extractionPose;
+  const t=smooth01(recordPlacement/.96);
+  travelRecord.position.lerpVectors(from.position,landingPosition,t);
+  travelRecord.quaternion.copy(from.quaternion).slerp(new THREE.Quaternion(),t);
+  travelRecord.scale.setScalar(THREE.MathUtils.lerp(from.scale,1,t));
+  travelRecord.visible=t<.999;
+  if(t>=.999){
+   travelRecord.visible=false;
+   pickupState.stage='placed';pickupState.extractionPose=null;
+   setPickupStage('');
+  }
  }
- if(targetMode==='wall'&&pickupState.stage==='placed'){travelRecord.visible=false;}
- recordGroup.position.y=1.174+(1-landing)*.12;
- recordGroup.scale.setScalar(.89+landing*.11);
+ recordGroup.visible=targetMode==='deck'&&pickupState.stage==='placed';
+ recordGroup.position.set(-.53,1.174,2.4);
+ recordGroup.scale.setScalar(1);
+ if(targetMode==='wall'&&pickupState.stage==='placed')travelRecord.visible=false;
  // Spin the record only while local playback/needle state is active.
  const playing=document.getElementById('vinyl').classList.contains('spinning');
  // Playback-driven ambience: no artificial claim of waveform analysis.
