@@ -157,7 +157,8 @@ test('commercial-song player makes Spotify dependency explicit',async({page})=>{
  await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
  await page.locator('.sleeve').nth(2).evaluate(el=>el.click());
  await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7000});
- await expect(page.locator('#playbackExplainer')).toContainText('Spotify is required');
+ await expect(page.locator('#playbackExplainer')).toContainText('Spotify or Apple Music');
+ await expect(page.locator('#appleOpen')).toBeVisible();
  await expect(page.locator('#spotifyOpen')).toBeVisible();
  await expect(page.locator('#jazzQuickPlay')).toBeVisible();
  await page.locator('#start').evaluate(el=>el.click());
