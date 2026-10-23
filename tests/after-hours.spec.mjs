@@ -243,3 +243,26 @@ test('selected vinyl and pickup record share the matching album cover',async({pa
  expect(next.travelMatchesMain).toBe(true);
  if(next.artworkLoaded)expect(next.mainMatchesArtwork).toBe(true);
 });
+
+
+test('turntable realism materials retain functional scene objects',async({page})=>{
+ test.setTimeout(100000);
+ await page.setViewportSize({width:1440,height:900});
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#game')).toHaveClass(/scene-settled/,{timeout:14000});
+ const ready=await page.evaluate(()=>!!window.afterHours3D);
+ if(!ready)test.skip(true,'WebGL unavailable');
+ const model=await page.evaluate(()=>{
+  const scene=window.afterHours3D.scene;
+  const body=scene.getObjectByName('AfterHoursTurntable');
+  return {exists:!!body,parts:body?.children.length||0};
+ });
+ expect(model.exists).toBe(true);
+ expect(model.parts).toBeGreaterThan(25);
+ await page.locator('.sleeve').nth(2).evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:8000});
+ await page.locator('#start').evaluate(el=>el.click());
+ await expect(page.locator('#sourceDrawer')).toHaveAttribute('open','');
+ expect(errors).toEqual([]);
+});
