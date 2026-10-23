@@ -78,7 +78,7 @@ for(let i=0;i<albums.length;i++){
  artCtx.font='22px Georgia';artCtx.fillText('AFTER HOURS · THE COLLECTION',256,55);
  const placeholder=new THREE.CanvasTexture(artCanvas);placeholder.colorSpace=THREE.SRGBColorSpace;
  const front=new THREE.MeshStandardMaterial({map:placeholder,roughness:.83});
- const geo=new THREE.BoxGeometry(1.64,1.64,.075);
+ const geo=new THREE.BoxGeometry(1.52,1.52,.075);
  const box=new THREE.Mesh(geo,[m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),m('#d0c5b5'),front,m('#1b1511')]);
  box.position.set(x,y,-2.36);box.rotation.y=-.05;box.castShadow=true;box.userData.record=i;scene.add(box);vinylHits.push(box);
  if(raw?.src){
