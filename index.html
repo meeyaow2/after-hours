@@ -585,9 +585,10 @@ async function resolveAppleSong(track){
  const matches=(data.results||[]).filter(result=>normalizeMusicName(result.trackName)===title);
  const exact=matches.find(result=>{
   const candidate=normalizeMusicName(result.artistName);
-  return artist.includes(candidate)||candidate.includes(artist.split('brunomars')[0]||artist);
+  return candidate.length>1&&(artist.includes(candidate)||candidate.includes(artist));
  });
- const selected=exact||matches[0];
+ // Never embed the wrong artist's recording just because the title matches.
+ const selected=exact;
  if(!selected?.trackViewUrl)return null;
  const trackUrl=new URL(selected.trackViewUrl);
  if(trackUrl.hostname!=='music.apple.com'&&!trackUrl.hostname.endsWith('.apple.com'))return null;
