@@ -528,7 +528,7 @@ function place(index,button){
  byId('sourceDrawer').open=false;
  byId('spotifyMount').replaceChildren();
  currentIframe=null;
- prepareLocal(index,{autoPlay:true});
+ prepareLocal(index,{autoPlay:false});
  announcePlayback('Checking saved audio for '+data.song+'…');
  setHint('Taking '+data.song+' from the shelf…');
  const complete=()=>{
@@ -539,10 +539,10 @@ function place(index,button){
    byId('artist').textContent=data.artist;
    byId('label').style.background=data.color;
    byId('label').style.color=data.ink;
-   setHint(sourceMode==='local'?'Press ▶ to hear your saved audio':'Listen on Spotify, or add a local recording you have permission to use.');
+   setHint(sourceMode==='local'?'Click the record or press ▶ to hear your saved audio':'Listen on Spotify, or add a local recording you have permission to use.');
  };
  if(document.documentElement.classList.contains('three-ready')){
-   selectionTimer=setTimeout(complete,matchMedia('(prefers-reduced-motion: reduce)').matches?180:1180);
+   selectionTimer=setTimeout(complete,matchMedia('(prefers-reduced-motion: reduce)').matches?180:1600);
    return;
  }
  const rect=button.getBoundingClientRect(),fly=byId('fly');
@@ -617,8 +617,8 @@ byId('audioFile').addEventListener('change',async event=>{
  if(!(file.type.startsWith('audio/')||/\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(file.name))){setHint('Please select an audio file.');return;}
  const index=chosen;stop();localFiles[index]=file;
  const saved=await saveStored(index,file);
- if(chosen===index)await prepareLocal(index,{autoPlay:true});
- if(chosen===index)setHint(saved?'Playing your private audio instead of Spotify.':'Your audio is ready for this session instead of Spotify.');
+ if(chosen===index)await prepareLocal(index,{autoPlay:false});
+ if(chosen===index)setHint(saved?'Audio saved. Click the record or press ▶ to play.':'Audio ready. Click the record or press ▶ to play.');
  event.target.value='';
 });
 byId('clearAudio').addEventListener('click',async()=>{
