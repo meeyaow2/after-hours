@@ -459,6 +459,15 @@ function move(e){
 }
 cv.addEventListener('pointermove',move);
 cv.addEventListener('pointerleave',()=>{hover=null;updateAlbumHover(-1)});
+// Prioritize projected hit areas for the two rightmost sleeves. Their thin
+// visible edges can otherwise lose click events to nearby 3D geometry.
+cv.addEventListener('click',e=>{
+ if(mode!=='wall'||performance.now()-lastExitAt<350)return;
+ const hit=sleeveAtScreenPoint(e.clientX,e.clientY);
+ if(!hit||![5,11].includes(hit.userData.record))return;
+ e.stopImmediatePropagation();
+ albums[hit.userData.record]?.click();
+},true);
 cv.addEventListener('click',e=>{
  if(performance.now()-lastExitAt<350)return;
  
