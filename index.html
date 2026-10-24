@@ -453,7 +453,7 @@ function syncLocalAudioUI(index,hasFile){
  if(hasFile){
   byId('spotifyMount').replaceChildren();
   currentIframe=null;
-  announcePlayback('Audio loaded for '+tracks[index].song+'. Play this record directly using the turntable. Spotify is hidden for this record.');
+  announcePlayback(tracks[index].song+' is ready. Press ▶ to listen.');
  }else{
   announcePlayback('Direct audio is unavailable for this record. Use its official listening option.');
  }
