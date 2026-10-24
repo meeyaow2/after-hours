@@ -410,7 +410,7 @@ let sourceMode='none';const freeJazz=[{name:'Long Stroll',url:'https://incompete
 const ownedAudio = new Audio();
 ownedAudio.preload='metadata';
 ownedAudio.volume=.65;
-const bundledAudio = {1:'./assets/audio/keshi-limbo.mp3',6:'./assets/audio/ocean-eyes.mp3'};
+const bundledAudio = {0:'./assets/audio/bruno-mars-when-i-was-your-man.mp3',1:'./assets/audio/keshi-limbo.mp3',6:'./assets/audio/ocean-eyes.mp3'};
 let localUrls = Object.create(null);
 let localFiles = Object.create(null);
 let ownedKey = null;
@@ -449,13 +449,13 @@ function stopOwned(reset=true){
 function syncLocalAudioUI(index,hasFile){
  if(index!==chosen)return;
  game.classList.toggle('has-local-audio',Boolean(hasFile));
- byId('spotifyOpen').hidden=Boolean(hasFile)||index===1;
+ byId('spotifyOpen').hidden=Boolean(hasFile);
  if(hasFile){
   byId('spotifyMount').replaceChildren();
   currentIframe=null;
   announcePlayback('Audio loaded for '+tracks[index].song+'. Play this record directly using the turntable. Spotify is hidden for this record.');
  }else{
-  announcePlayback(index===1?'LIMBO audio has not been published to this website yet. The record is ready, but direct playback is unavailable.':'This record uses Spotify unless its direct audio is available.');
+  announcePlayback('Direct audio is unavailable for this record. Use its official listening option.');
  }
 }
 function updateVinylState(on){
@@ -500,7 +500,7 @@ async function prepareLocal(index,{autoPlay=false}={}){
    syncLocalAudioUI(index,true);
   }else{
    sourceMode='none';
-   byId('playbackExplainer').textContent=index===1?'LIMBO audio is not available on this website yet.':'Direct playback is unavailable for this record. Use its official listening link.';
+   byId('playbackExplainer').textContent='Direct playback is unavailable for this record. Use its official listening link.';
    
    syncLocalAudioUI(index,false);
   }
@@ -543,7 +543,7 @@ function place(index,button){
  const data=tracks[index];
  chosen=index;
  game.classList.remove('has-local-audio');
- byId('spotifyOpen').hidden=index===1;
+ byId('spotifyOpen').hidden=Boolean(bundledAudio[index]);
  // Keep the vinyl artwork in sync whether selection came from 3D, mobile, or the HTML fallback.
  window.afterHours3D?.selectRecord(index);
  lift();stopOwned();
@@ -562,7 +562,7 @@ function place(index,button){
    byId('artist').textContent=data.artist;
    byId('label').style.background=data.color;
    byId('label').style.color=data.ink;
-   setHint(sourceMode==='local'?'Click the record or press ▶ to play '+data.song:index===1?'LIMBO audio is not available on the website yet.':'Record ready · Select an available listening option.');
+   setHint(sourceMode==='local'?'Click the record or press ▶ to play '+data.song:'Record ready · Select an available listening option.');
  };
  if(document.documentElement.classList.contains('three-ready')){
    selectionTimer=setTimeout(complete,matchMedia('(prefers-reduced-motion: reduce)').matches?180:1600);
@@ -625,7 +625,6 @@ async function lower(){
   return;
  }
  // This physical button cannot start licensed streaming in Spotify.
- if(chosen===1){setHint('LIMBO audio has not been added to the website yet.');return;}
  byId('needleStatus').textContent='SPOTIFY · USE PLAYER';
  showSpotifyEmbed();
 }
