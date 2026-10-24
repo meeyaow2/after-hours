@@ -207,7 +207,7 @@ function updateRecordLabel(index){
 
 const spindle=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.055,20),steel);spindle.position.y=.055;recordGroup.add(spindle);
 const toneBase=cylinder(.13,.13,steel,.94,1.055,1.9);
-const tonePivot=new THREE.Group();tonePivot.position.set(.94,1.16,1.9);scene.add(tonePivot);
+const tonePivot=new THREE.Group();tonePivot.position.set(.94,1.32,1.9);scene.add(tonePivot);
 function beamBetween(parent,a,b,r,material){const v1=new THREE.Vector3(...a),v2=new THREE.Vector3(...b),dif=v2.clone().sub(v1);const beam=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dif.length(),14),material);beam.position.copy(v1.clone().add(v2).multiplyScalar(.5));beam.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dif.normalize());beam.castShadow=true;parent.add(beam);return beam}
 beamBetween(tonePivot,[0,.02,0],[-.15,.03,.20],.023,steel);
 beamBetween(tonePivot,[-.15,.03,.20],[-.925,-.04,.945],.019,steel);
@@ -614,7 +614,7 @@ function animate(){
  recordGroup.rotation.y-=motorSpeed*dt;
  const needleDown=document.getElementById('tonearm').classList.contains('down');
  tonePivot.rotation.y=THREE.MathUtils.damp(tonePivot.rotation.y,needleDown?-.45:.16,3.6,dt);
- tonePivot.rotation.x=THREE.MathUtils.damp(tonePivot.rotation.x,needleDown?.02:-.09,4,dt);
+ tonePivot.rotation.x=THREE.MathUtils.damp(tonePivot.rotation.x,needleDown?.02:.12,4,dt);
  renderer.render(scene,camera);
 }
 /* Render the fully constructed scene before revealing the WebGL version.
