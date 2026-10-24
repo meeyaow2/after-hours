@@ -459,8 +459,19 @@ function move(e){
 }
 cv.addEventListener('pointermove',move);
 cv.addEventListener('pointerleave',()=>{hover=null;updateAlbumHover(-1)});
-// Prioritize projected hit areas for the two rightmost sleeves. Their thin
-// visible edges can otherwise lose click events to nearby 3D geometry.
+// Edge records (Soft Spot and Joji) can sit under other scene/UI layers.
+// Listen on the room in capture phase so an overlay cannot swallow their clicks.
+// Never intercept actual controls, and keep the existing canvas handler for all other records.
+game.addEventListener('click',e=>{
+ if(mode!=='wall'||game.classList.contains('playing-view')||performance.now()-lastExitAt<350)return;
+ if(e.target instanceof Element && e.target.closest('button,a,input,select,summary,.controlpanel,.source-drawer,.sanctuary-note,.welcome-card'))return;
+ const hit=sleeveAtScreenPoint(e.clientX,e.clientY);
+ const index=hit?.userData.record;
+ if(index!==5&&index!==11)return;
+ e.preventDefault();
+ e.stopPropagation();
+ albums[index].click();
+},true);
 cv.addEventListener('click',e=>{
  if(mode!=='wall'||performance.now()-lastExitAt<350)return;
  const hit=sleeveAtScreenPoint(e.clientX,e.clientY);
