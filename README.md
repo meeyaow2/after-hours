@@ -1,6 +1,6 @@
 # After Hours — 3D Vinyl Listening Room
 
-**Live website:** https://meeyaow2.github.io/ops-music-playground/
+**Live website:** https://meeyaow2.github.io/after-hours/
 
 After Hours is an interactive music playground built with HTML, CSS, JavaScript and Three.js. Browse twelve records, pick one up from the 3D shelves, and play it at the turntable.
 
