@@ -9,6 +9,8 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<800?1.35:1.75));rend
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.90;
 game.insertBefore(cv,room);
+// WebGL is now the sole visible room; hide the legacy fallback immediately.
+document.documentElement.classList.add('three-ready');
 const scene=new THREE.Scene();scene.background=new THREE.Color('#17100c');scene.fog=new THREE.FogExp2('#20150e',.025);
 const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.08,100);
 camera.position.set(0,2.65,7.8);
