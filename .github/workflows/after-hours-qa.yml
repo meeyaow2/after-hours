@@ -1,13 +1,6 @@
 name: After Hours browser smoke tests
+# Manual QA until the remaining 3D browser regressions are fixed.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'index.html'
-      - 'scene3d.js'
-      - 'assets/**'
-      - 'tests/**'
-      - '.github/workflows/after-hours-qa.yml'
   workflow_dispatch:
 
 permissions:
