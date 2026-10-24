@@ -78,45 +78,16 @@ for (const width of widths) {
 }
 
 
-function wavTone(seconds=4, sampleRate=22050) {
-  const count=Math.round(seconds*sampleRate);
-  const buffer=Buffer.alloc(44+count*2);
-  buffer.write('RIFF',0);buffer.writeUInt32LE(buffer.length-8,4);
-  buffer.write('WAVEfmt ',8);buffer.writeUInt32LE(16,16);
-  buffer.writeUInt16LE(1,20);buffer.writeUInt16LE(1,22);
-  buffer.writeUInt32LE(sampleRate,24);buffer.writeUInt32LE(sampleRate*2,28);
-  buffer.writeUInt16LE(2,32);buffer.writeUInt16LE(16,34);
-  buffer.write('data',36);buffer.writeUInt32LE(count*2,40);
-  for(let i=0;i<count;i++){
-    const envelope=Math.min(1,i/(sampleRate*.08))*Math.min(1,(count-i)/(sampleRate*.08));
-    buffer.writeInt16LE(Math.round(Math.sin(i/sampleRate*2*Math.PI*220)*11000*envelope),44+i*2);
-  }
-  return buffer;
-}
-for (const width of [390,1440]) {
- test('imported audio actually plays and spins vinyl at '+width+'px', async ({page}) => {
-  test.setTimeout(60000);
-  await page.setViewportSize({width,height:900});
-  await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
-  await page.waitForTimeout(1200);
-  const ready=await page.evaluate(()=>document.documentElement.classList.contains('three-ready'));
-  if(width===390&&ready){
-    await page.locator('.mobile-record').first().click();
-  } else {
-    await page.locator('.sleeve').first().evaluate(el=>el.click());
-  }
-  await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:7000});
-  await page.locator('#audioFile').setInputFiles({
-   name:'qa-sine.wav',mimeType:'audio/wav',buffer:wavTone()
-  });
-  await expect(page.locator('#localStatus')).toContainText('Ready: qa-sine.wav',{timeout:7000});
-  await page.locator('#start').evaluate(el=>el.click());
-  await expect(page.locator('#vinyl')).toHaveClass(/spinning/,{timeout:4000});
-  await page.locator('#stop').evaluate(el=>el.click());
-  await expect(page.locator('#vinyl')).not.toHaveClass(/spinning/);
- });
-}
-
+test('audio importer is removed and album playback choices remain',async({page})=>{
+ await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#audioFile')).toHaveCount(0);
+ await expect(page.locator('#clearAudio')).toHaveCount(0);
+ await page.locator('.sleeve').first().evaluate(el=>el.click());
+ await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:8000});
+ await expect(page.locator('#start')).toBeAttached();
+ await expect(page.locator('#spotifyOpen')).toBeAttached();
+ await expect(page.locator('#jazzQuickPlay')).toBeAttached();
+});
 
 test.describe('Safe-space onboarding and physical exit', () => {
  test.use({viewport:{width:1440,height:900},deviceScaleFactor:1});
@@ -338,25 +309,10 @@ test('vinyl extraction and placement use continuous motion',async({page})=>{
 });
 
 
-test('private Ocean Eyes audio overrides Spotify for its record',async({page})=>{
- test.setTimeout(100000);
- await page.setViewportSize({width:1440,height:900});
+test('Ocean Eyes record keeps official listening fallback when bundled audio is absent',async({page})=>{
  await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
  await page.locator('.sleeve').nth(6).evaluate(el=>el.click());
  await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:9000});
- await expect(page.locator('#spotifyOpen')).toBeVisible();
- const wav=Buffer.from('UklGRn4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'base64');
- await page.locator('#audioFile').setInputFiles({name:'ocean eyes.wav',mimeType:'audio/wav',buffer:wav});
- await expect(page.locator('#game')).toHaveClass(/has-local-audio/,{timeout:8000});
- await expect(page.locator('#spotifyOpen')).toBeHidden();
- await expect(page.locator('#localStatus')).toContainText('ocean eyes.wav');
- await page.keyboard.press('Escape');
- await expect(page.locator('#game')).not.toHaveClass(/playing-view/);
- await page.locator('.sleeve').nth(6).evaluate(el=>el.click());
- await expect(page.locator('#game')).toHaveClass(/has-local-audio/,{timeout:10000});
- await expect(page.locator('#spotifyOpen')).toBeHidden();
- await page.keyboard.press('Escape');
- await page.locator('.sleeve').nth(0).evaluate(el=>el.click());
- await expect(page.locator('#game')).toHaveClass(/playing-view/,{timeout:9000});
+ await expect(page.locator('#audioFile')).toHaveCount(0);
  await expect(page.locator('#spotifyOpen')).toBeVisible();
 });
